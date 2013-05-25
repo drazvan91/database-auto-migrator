@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseAutoMigrator", "DatabaseAutoMigrator\DatabaseAutoMigrator.csproj", "{8AAFB3B1-E748-44A5-87B7-259944211D8E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseAutoMigrator.Tests", "DatabaseAutoMigrator.Tests\DatabaseAutoMigrator.Tests.csproj", "{915994AE-DC46-4B48-838F-1ED75B72675A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "ConsoleTest\ConsoleTest.csproj", "{88E6CDAE-EB33-4E5C-8D3F-E961EEF4305B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +17,14 @@ Global
 		{8AAFB3B1-E748-44A5-87B7-259944211D8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8AAFB3B1-E748-44A5-87B7-259944211D8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8AAFB3B1-E748-44A5-87B7-259944211D8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{915994AE-DC46-4B48-838F-1ED75B72675A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{915994AE-DC46-4B48-838F-1ED75B72675A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{915994AE-DC46-4B48-838F-1ED75B72675A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{915994AE-DC46-4B48-838F-1ED75B72675A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88E6CDAE-EB33-4E5C-8D3F-E961EEF4305B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88E6CDAE-EB33-4E5C-8D3F-E961EEF4305B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88E6CDAE-EB33-4E5C-8D3F-E961EEF4305B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88E6CDAE-EB33-4E5C-8D3F-E961EEF4305B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

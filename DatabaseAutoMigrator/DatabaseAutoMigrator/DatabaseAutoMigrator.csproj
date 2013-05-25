@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DatabaseAutoMigrator</RootNamespace>
     <AssemblyName>DatabaseAutoMigrator</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,9 +40,48 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="BaseMigrator.cs" />
+    <Compile Include="Commands\DropTableCommandModel.cs" />
+    <Compile Include="Commands\Factories\BaseGenericCommandFactory.cs" />
+    <Compile Include="Commands\Factories\ICommandFactory.cs" />
+    <Compile Include="Commands\CreateTableCommandModel.cs" />
+    <Compile Include="Commands\Factories\IGenericCommandFactory.cs" />
+    <Compile Include="Commands\InsertCommandModel.cs" />
+    <Compile Include="Commands\RawCommandModel.cs" />
+    <Compile Include="DatabaseAccess\BaseDatabaseProvider.cs" />
+    <Compile Include="DatabaseAccess\IDatabaseCommand.cs" />
+    <Compile Include="DatabaseAccess\IDatabaseProvider.cs" />
+    <Compile Include="DatabaseAccess\IDatabaseReader.cs" />
+    <Compile Include="DatabaseAccess\IDatabaseTransaction.cs" />
+    <Compile Include="IDialect.cs" />
+    <Compile Include="Exceptions\WrongConnectionStringException.cs" />
+    <Compile Include="ExecuteIterationResult.cs" />
+    <Compile Include="Commands\ICommandModel.cs" />
+    <Compile Include="IMigrationFile.cs" />
+    <Compile Include="IMigrator.cs" />
+    <Compile Include="Logging\BaseLogger.cs" />
+    <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="Logging\Impl\ConsoleLogger.cs" />
+    <Compile Include="Logging\LoggerFactory.cs" />
+    <Compile Include="MigrateIteration.cs" />
+    <Compile Include="Models\Column.cs" />
+    <Compile Include="Models\ColumnDataType.cs" />
+    <Compile Include="Models\ColumnParameter.cs" />
+    <Compile Include="Providers\Sql\CommandFactories\SqlInsertCommandFactory.cs" />
+    <Compile Include="Providers\Sql\CommandFactories\SqlRawCommandFactory.cs" />
+    <Compile Include="Providers\Sql\CommandFactories\SqlDropTableCommandFactory.cs" />
+    <Compile Include="Providers\Sql\CommandFactories\SqlCreateTableCommandFactory.cs" />
+    <Compile Include="Providers\Sql\Helpers\SqlColumnHelper.cs" />
+    <Compile Include="Providers\Sql\SqlDatabaseCommand.cs" />
+    <Compile Include="Providers\Sql\CommandFactories\SqlGenericCommandFactory.cs" />
+    <Compile Include="Providers\Sql\SqlDatabaseProvider.cs" />
+    <Compile Include="Providers\Sql\SqlDatabaseReader.cs" />
+    <Compile Include="Providers\Sql\SqlDatabaseTransaction.cs" />
+    <Compile Include="Providers\Sql\SqlMigrator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\Sql\SqlDialect.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
