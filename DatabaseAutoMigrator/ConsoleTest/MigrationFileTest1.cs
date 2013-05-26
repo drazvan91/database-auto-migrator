@@ -23,10 +23,12 @@ namespace ConsoleTest
         public MigrateIteration Migrate_3()
         {
             var ret = new MigrateIteration("migrate");
+            
             ret.CreateTable("Test3")
                 .AutoIncrementColumn("Id", ColumnDataType.Int32)
                 .Column("Name", ColumnDataType.String, 1000)
                 .Timestamp();
+            ret.CreateTable("dsds");
             return ret;
         }
     }

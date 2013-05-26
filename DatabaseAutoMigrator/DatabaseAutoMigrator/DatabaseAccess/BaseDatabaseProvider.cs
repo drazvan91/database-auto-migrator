@@ -20,22 +20,22 @@ namespace DatabaseAutoMigrator.DatabaseAccess
 
         public virtual int ExecuteCommand(ICommandModel command)
         {
-            var cmd = this.CommandFactory.GenerateGenericCommand(command);
+            var cmd = this.CommandFactory.GenericCommand(command);
             return ExecuteCommand(cmd);
         }
         public virtual int ExecuteCommand(ICommandModel command, TTransaction transaction)
         {
-            var cmd = this.CommandFactory.GenerateGenericCommand(command);
+            var cmd = this.CommandFactory.GenericCommand(command);
             return ExecuteCommand(cmd, transaction);
         }
         public virtual TReader ExecuteReaderCommand(ICommandModel command)
         {
-            var cmd = this.CommandFactory.GenerateGenericCommand(command);
+            var cmd = this.CommandFactory.GenericCommand(command);
             return ExecuteReaderCommand(cmd);
         }
         public virtual TReader ExecuteReaderCommand(ICommandModel command, TTransaction transaction)
         {
-            var cmd = this.CommandFactory.GenerateGenericCommand(command);
+            var cmd = this.CommandFactory.GenericCommand(command);
             return ExecuteReaderCommand(cmd, transaction);
         }
 

@@ -4,10 +4,10 @@ namespace DatabaseAutoMigrator.Commands.Factories
 {
     public interface IGenericCommandFactory<TCommand> where TCommand:IDatabaseCommand
     {
-        TCommand GenerateGenericCommand(ICommandModel model);
-        TCommand GenerateCreateTableCommand(CreateTableCommandModel model);
-        TCommand GenerateDropTableCommand(DropTableCommandModel model);
-        TCommand GenerateRawCommand(RawCommandModel model);
-        TCommand GenerateInsertCommand(InsertCommandModel model);
+        TCommand GenericCommand(ICommandModel model);
+        TCommand CreateTable(CreateTableCommandModel model);
+        TCommand DropTable(DropTableCommandModel model);
+        TCommand RawCommand(RawCommandModel model);
+        TCommand Insert(InsertCommandModel model);
     }
 }

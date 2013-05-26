@@ -67,13 +67,9 @@
     <Compile Include="Models\Column.cs" />
     <Compile Include="Models\ColumnDataType.cs" />
     <Compile Include="Models\ColumnParameter.cs" />
-    <Compile Include="Providers\Sql\CommandFactories\SqlInsertCommandFactory.cs" />
-    <Compile Include="Providers\Sql\CommandFactories\SqlRawCommandFactory.cs" />
-    <Compile Include="Providers\Sql\CommandFactories\SqlDropTableCommandFactory.cs" />
-    <Compile Include="Providers\Sql\CommandFactories\SqlCreateTableCommandFactory.cs" />
     <Compile Include="Providers\Sql\Helpers\SqlColumnHelper.cs" />
+    <Compile Include="Providers\Sql\SqlCommandFactory.cs" />
     <Compile Include="Providers\Sql\SqlDatabaseCommand.cs" />
-    <Compile Include="Providers\Sql\CommandFactories\SqlGenericCommandFactory.cs" />
     <Compile Include="Providers\Sql\SqlDatabaseProvider.cs" />
     <Compile Include="Providers\Sql\SqlDatabaseReader.cs" />
     <Compile Include="Providers\Sql\SqlDatabaseTransaction.cs" />
@@ -81,7 +77,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\Sql\SqlDialect.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Providers\Sql\CommandFactories\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
