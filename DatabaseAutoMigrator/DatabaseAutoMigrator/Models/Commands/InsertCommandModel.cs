@@ -1,7 +1,7 @@
-﻿using DatabaseAutoMigrator.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-namespace DatabaseAutoMigrator.Commands
+
+namespace DatabaseAutoMigrator.Models.Commands
 {
     public class InsertCommandModel:ICommandModel
     {

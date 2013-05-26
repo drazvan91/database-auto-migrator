@@ -4,19 +4,20 @@ using System.Collections.Generic;
 using System.Reflection;
 using DatabaseAutoMigrator.DatabaseAccess;
 using DatabaseAutoMigrator.Logging;
-using DatabaseAutoMigrator.Commands;
 using DatabaseAutoMigrator.Models;
+using DatabaseAutoMigrator.Models.Commands;
 
 namespace DatabaseAutoMigrator
 {
-    public abstract class BaseMigrator<TCommand,TTransaction,TReader> : IMigrator
+    public abstract class BaseMigrator<TCommand,TReader> : IMigrator
         where TCommand: IDatabaseCommand
-        where TTransaction: IDatabaseTransaction
-        where TReader: IDatabaseReader
+        where TReader:IDatabaseReader
     {
         public string MigrationTableName = "DatabaseAutoMigrator";
 
-        protected IDatabaseProvider<TCommand, TTransaction, TReader> databaseProvider { get; set; }
+        protected BaseDatabaseContext<TCommand,TReader> DatabaseContext { get; set; }
+        protected IDatabaseProvider<TCommand,TReader> DatabaseProvider {get;set;}
+
         private ILogger logger { get; set; }
 
         public BaseMigrator()
@@ -31,7 +32,7 @@ namespace DatabaseAutoMigrator
             var methods = migrationFile.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance);
             var allMigrations = (from m in methods
                                  where m.Name.StartsWith("Migrate_")
-                                 select new MigrateIterationHelper()
+                                 select new MigrateIteration()
                                  {
                                      File=migrationFile,
                                      Id = m.Name.Remove(0, "Migrate_".Length),
@@ -40,7 +41,7 @@ namespace DatabaseAutoMigrator
             return migrateMethods(allMigrations);
             
         }
-        private string migrateMethods(IEnumerable<MigrateIterationHelper> methods)
+        private string migrateMethods(IEnumerable<MigrateIteration> methods)
         {
             logger.Log("getting last migration id", "migrate");
             string lastMigrationId = this.GetLastMigrationID();
@@ -55,13 +56,9 @@ namespace DatabaseAutoMigrator
             var currentMigrationId = lastMigrationId;
             foreach (var iteration in nextMigrations)
             {
-                MigrateIteration rez = new MigrateIteration();
-                rez.Description = (string)iteration.Method.Invoke(iteration.File,
-                    new object[] { rez })
-                    ?? "no description";
                 logger.EmptyLine();
                 logger.Log("starting execute migration #" + iteration.Id, "migrate");
-                var result = this.ExecuteMigrateIteration(iteration.Id, rez, currentMigrationId);
+                var result = this.ExecuteMigrateIteration(iteration, currentMigrationId);
                 if (result.Success == false)
                 {
                     logger.EmptyLine();
@@ -86,29 +83,22 @@ namespace DatabaseAutoMigrator
             return "";
         }
 
-        public ExecuteIterationResult ExecuteMigrateIteration(string migrationId, MigrateIteration iteration, string currentId)
+        public ExecuteIterationResult ExecuteMigrateIteration(MigrateIteration iteration, string currentId)
         {
             if (iteration != null)
             {
                 try
                 {
-                    using (TTransaction transaction = this.databaseProvider.CreateTransaction("auto_migrate_transaction"))
-                    {
-                        if (iteration.Commands != null && iteration.Commands.Count > 0)
-                        {
-                            foreach (var comm in iteration.Commands)
-                            {
-                                databaseProvider.ExecuteCommand(comm, transaction);
-                            }
-                        }
-                        
-                        this.InsertMigrationFingerPrint(migrationId, iteration.Description,transaction);
-                        transaction.Commit();
-                        return new ExecuteIterationResult();
-                    }
+                    this.DatabaseProvider.StartTransaction("automigratetransaction");
+                    string description=(string)iteration.Method.Invoke(iteration.File,new object[]{this.DatabaseContext});
+                    this.InsertMigrationFingerPrint(iteration.Id, description);
+                    this.DatabaseProvider.CommitTransaction();
+                    return new ExecuteIterationResult();
                 }
                 catch (Exception ex)
                 {
+                    if (ex.InnerException != null)
+                        return new ExecuteIterationResult(ex.InnerException);
                     return new ExecuteIterationResult(ex);
                 }
             }
@@ -119,8 +109,7 @@ namespace DatabaseAutoMigrator
         public virtual string GetLastMigrationID()
         {
             string cmd = string.Format(@"select Id from {0} order by Id desc", this.MigrationTableName);
-            RawCommandModel rawCommand = new RawCommandModel(cmd);
-            var reader = this.databaseProvider.ExecuteReaderCommand(rawCommand);
+            var reader=this.DatabaseContext.ExecuteReader(cmd);
             string id = string.Empty;
             if (reader.Read())
             {
@@ -138,15 +127,14 @@ namespace DatabaseAutoMigrator
                 .Column("Executed", ColumnDataType.DateTime, false)
                 .Column("Description", ColumnDataType.String, 500)
                 .Timestamp();
-            this.databaseProvider.ExecuteCommand(table);
+            this.DatabaseContext.CreateTable(table);
         }
 
         public virtual bool IsMigrationTableCreated()
         {
             string cmd = string.Format(@"SELECT * FROM INFORMATION_SCHEMA.TABLES where TABLE_NAME = '{0}'", this.MigrationTableName);
 
-            RawCommandModel rawCommand = new RawCommandModel(cmd);
-            var reader = this.databaseProvider.ExecuteReaderCommand(rawCommand);
+            var reader = this.DatabaseContext.ExecuteReader(cmd);
             bool exists = false;
             if (reader.Read())
                 exists = true;
@@ -155,22 +143,16 @@ namespace DatabaseAutoMigrator
             return exists;
         }
 
-        public virtual void InsertMigrationFingerPrint(string id, string description, IDatabaseTransaction transaction)
+        public virtual void InsertMigrationFingerPrint(string id, string description)
         {
             InsertCommandModel cmd = new InsertCommandModel(this.MigrationTableName)
                 .Parameter("Id", id)
                 .Parameter("Description", description)
                 .FunctionParameter("Executed", "GETDATE()");
-            this.databaseProvider.ExecuteCommand(cmd,(TTransaction)transaction);
+            this.DatabaseContext.InsertRow(cmd);
         }
         #endregion
         public abstract void Dispose();
 
-    }
-    internal class MigrateIterationHelper
-    {
-        public MethodInfo Method{get;set;}
-        public string Id { get; set; }
-        public IMigrationFile File { get; set; }
     }
 }

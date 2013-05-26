@@ -1,11 +1,6 @@
-﻿using DatabaseAutoMigrator.Models;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-namespace DatabaseAutoMigrator.Commands
+namespace DatabaseAutoMigrator.Models.Commands
 {
     public class AlterTableCommandModel:ICommandModel
     {

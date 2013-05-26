@@ -3,65 +3,54 @@ using DatabaseAutoMigrator;
 using DatabaseAutoMigrator.Models;
 namespace ConsoleTest
 {
-    public class MigrationFileTest1:IMigrationFile
+    public class MigrationFileTest1:BaseMigrationFile
     {
-        public string Migrate_2013_01_12_1221(MigrateIteration e)
+        
+        
+        public string Migrate_2013(IDatabaseContext db)
         {
-            e.CreateTable("Razvan1")
-                .AutoIncrementColumn("Id", ColumnDataType.Int64)
-                .Column("Name", ColumnDataType.String, 50, false)
-                .Timestamp();
+            var table=Helper.CreateTable("razvan")
+                .Column("Id",ColumnDataType.Int64,false)
+                .Column("Name",ColumnDataType.String,400,false);
+
+            db.CreateTable(table);
+
             return "First migration";
         }
-        public string Migrate_2013_01_12_1222(MigrateIteration e)
+        public string Migrate_2014(IDatabaseContext db)
         {
-            e.DropTable("Razvan1");
-            return "second migration";
-        }
-        public string Migrate_2013_01_12_1223(MigrateIteration e)
-        {
-            e.CreateTable("Test3")
-                .AutoIncrementColumn("Id", ColumnDataType.Int32)
-                .Column("Name", ColumnDataType.String, 1000)
-                .Timestamp();
-            return "added test3 table";
+            db.DropTable("razvan",false);
+            return "drop razvan";
         }
 
-        public string Migrate_2013_01_12_1224(MigrateIteration e)
+        public string Migrate_2015(IDatabaseContext db)
         {
-            e.DropTable("Iancu");
-            return "deleted iancu table";
+            var table=Helper.AlterTable("Lucian")
+                .AddColumn("Razvan",ColumnDataType.String,423,true);
+            db.AlterTable(table);
+            return "added razvan column";
         }
 
-        public string Migrate_2013_01_12_1225(MigrateIteration e)
+        public string Migrate_2016(IDatabaseContext db)
         {
-            e.AlterTable("Lucian")
-                .AddColumn("Add", ColumnDataType.Int16, false)
-                .DeleteColumn("Adaugata")
-                .AlterColumn("Name", ColumnDataType.String, 500, false);
-            e.DropTable("Table1");
-            return "yey";
+            var table = Helper.AlterTable("Lucian")
+                .AddColumn("Razvan1", ColumnDataType.String, 23, true)
+                .AddColumn("Ok", ColumnDataType.Int64, false)
+                .DeleteColumn("Razvan")
+                .AlterColumn("Name", ColumnDataType.String, 123, true);
+            db.AlterTable(table);
+            return "added razvan column";
+        }
 
-        }
-        public string Migrate_2013_01_12_1226(MigrateIteration e)
+        public string Migrate_2018(IDatabaseContext db)
         {
-            e.AlterTable("Razvan1")
-                .AddColumn("Adaugata1", ColumnDataType.Int32, false)
-                .AddColumn("Adaugata2", ColumnDataType.Int64, true);
-            return "yes6";
-        }
-        public string Migrate_2013_01_12_1227(MigrateIteration e)
-        {
-            e.CreateTable("test")
-                .AutoIncrementColumn("Id", ColumnDataType.Int64);
-
-            return "yes6";
-        }
-        public string Migrate_2013_01_12_1228(MigrateIteration e)
-        {
-            e.AlterTable("test")
-                .AlterColumn("Id", ColumnDataType.Int64, false);
-            return "da";
+            var row = Helper.InsertRow("Lucian")
+                .Parameter("Name", "yes")
+                .Parameter("Add", 3)
+                .Parameter("ok", 4)
+                .Parameter("Razvan1","acuma");
+            db.InsertRow(row);
+            return "insert row";
         }
     }
 }

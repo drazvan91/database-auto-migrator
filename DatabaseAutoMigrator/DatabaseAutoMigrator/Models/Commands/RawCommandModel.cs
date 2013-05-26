@@ -1,4 +1,4 @@
-﻿namespace DatabaseAutoMigrator.Commands
+﻿namespace DatabaseAutoMigrator.Models.Commands
 {
     public class RawCommandModel:ICommandModel
     {

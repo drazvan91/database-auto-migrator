@@ -11,12 +11,12 @@ namespace DatabaseAutoMigrator
         string Migrate(IEnumerable<IMigrationFile> migrationFiles);
         string Migrate(Assembly assembly, string nameSpace);
         
-        ExecuteIterationResult ExecuteMigrateIteration(string migrationId, MigrateIteration iteration, string currentId);
+        ExecuteIterationResult ExecuteMigrateIteration(MigrateIteration iteration, string currentId);
 
         string GetLastMigrationID();
         void CreateMigrationTable();
         bool IsMigrationTableCreated();
-        void InsertMigrationFingerPrint(string id, string description,IDatabaseTransaction transaction);
+        void InsertMigrationFingerPrint(string id, string description);
         
     }
 }
