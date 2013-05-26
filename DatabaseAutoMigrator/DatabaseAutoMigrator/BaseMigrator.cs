@@ -24,60 +24,69 @@ namespace DatabaseAutoMigrator
             logger = LoggerFactory.Current.Get("BaseMigrator");
         }
 
-        public long Migrate(IMigrationFile migrationFile)
+        public string Migrate(IMigrationFile migrationFile)
         {
             logger.Log("starting migration from single file", "migrate");
-            logger.Log("getting last migration id", "migrate");
-            long lastMigrationId = this.GetLastMigrationID();
-            logger.Log("last id=" + lastMigrationId, "migrate");
+            
             var methods = migrationFile.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance);
             var allMigrations = (from m in methods
                                  where m.Name.StartsWith("Migrate_")
-                                 select m);
-            var nextMigrations = (from m in allMigrations
-                                  let id = int.Parse(m.Name.Remove(0, "Migrate_".Length))
-                                  where id > lastMigrationId
-                                  orderby m.Name
-                                  select new
-                                  {
-                                      Method = m,
-                                      Id = id
-                                  });
+                                 select new MigrateIterationHelper()
+                                 {
+                                     File=migrationFile,
+                                     Id = m.Name.Remove(0, "Migrate_".Length),
+                                     Method=m
+                                 });
+            return migrateMethods(allMigrations);
+            
+        }
+        private string migrateMethods(IEnumerable<MigrateIterationHelper> methods)
+        {
+            logger.Log("getting last migration id", "migrate");
+            string lastMigrationId = this.GetLastMigrationID();
+            logger.Log("last id=" + lastMigrationId, "migrate");
+
+            var nextMigrations = (from m in methods
+                                  where string.Compare(m.Id ,lastMigrationId)>0
+                                  orderby m.Id
+                                  select m);
             logger.Log("number of valid migration methods: " + nextMigrations.Count(), "migrate");
 
             var currentMigrationId = lastMigrationId;
             foreach (var iteration in nextMigrations)
             {
                 MigrateIteration rez = new MigrateIteration();
-                rez.Description=(string)iteration.Method.Invoke(migrationFile, 
-                    new object[]{rez})
+                rez.Description = (string)iteration.Method.Invoke(iteration.File,
+                    new object[] { rez })
                     ?? "no description";
-                
+                logger.EmptyLine();
                 logger.Log("starting execute migration #" + iteration.Id, "migrate");
                 var result = this.ExecuteMigrateIteration(iteration.Id, rez, currentMigrationId);
                 if (result.Success == false)
                 {
-                    logger.Log("Error at migration #" + iteration.Id+". "+result.Error.Message, "migrate");
+                    logger.EmptyLine();
+                    logger.Log("Error at migration #" + iteration.Id + ". " + result.Error.Message, "migrate");
                     break;
                 }
                 else
                 {
                     currentMigrationId = iteration.Id;
                 }
+                logger.EmptyLine();
             }
             logger.Log("migration finished with id: " + currentMigrationId);
             return currentMigrationId;
         }
-        public long Migrate(IEnumerable<IMigrationFile> migrationFiles)
+        public string Migrate(IEnumerable<IMigrationFile> migrationFiles)
         {
-            return 0;
+            return "";    
         }
-        public long Migrate(Assembly assembly, string nameSpace)
+        public string Migrate(Assembly assembly, string nameSpace)
         {
-            return 0;
+            return "";
         }
 
-        public ExecuteIterationResult ExecuteMigrateIteration(long migrationId, MigrateIteration iteration, long currentId)
+        public ExecuteIterationResult ExecuteMigrateIteration(string migrationId, MigrateIteration iteration, string currentId)
         {
             if (iteration != null)
             {
@@ -107,15 +116,15 @@ namespace DatabaseAutoMigrator
         }
 
         #region Migration Table
-        public virtual long GetLastMigrationID()
+        public virtual string GetLastMigrationID()
         {
             string cmd = string.Format(@"select Id from {0} order by Id desc", this.MigrationTableName);
             RawCommandModel rawCommand = new RawCommandModel(cmd);
             var reader = this.databaseProvider.ExecuteReaderCommand(rawCommand);
-            long id = 0;
+            string id = string.Empty;
             if (reader.Read())
             {
-                id = int.Parse(reader.Get("Id").ToString());
+                id = reader.Get("Id").ToString();
             }
             reader.Close();
             reader.Dispose();
@@ -125,7 +134,7 @@ namespace DatabaseAutoMigrator
         public virtual void CreateMigrationTable()
         {
             CreateTableCommandModel table = new CreateTableCommandModel(this.MigrationTableName)
-                .Column("Id", ColumnDataType.Int64,false)
+                .Column("Id", ColumnDataType.String,20,false)
                 .Column("Executed", ColumnDataType.DateTime, false)
                 .Column("Description", ColumnDataType.String, 500)
                 .Timestamp();
@@ -146,7 +155,7 @@ namespace DatabaseAutoMigrator
             return exists;
         }
 
-        public virtual void InsertMigrationFingerPrint(long id, string description, IDatabaseTransaction transaction)
+        public virtual void InsertMigrationFingerPrint(string id, string description, IDatabaseTransaction transaction)
         {
             InsertCommandModel cmd = new InsertCommandModel(this.MigrationTableName)
                 .Parameter("Id", id)
@@ -157,5 +166,11 @@ namespace DatabaseAutoMigrator
         #endregion
         public abstract void Dispose();
 
+    }
+    internal class MigrateIterationHelper
+    {
+        public MethodInfo Method{get;set;}
+        public string Id { get; set; }
+        public IMigrationFile File { get; set; }
     }
 }

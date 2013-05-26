@@ -7,16 +7,16 @@ namespace DatabaseAutoMigrator
 {
     public interface IMigrator:IDisposable
     {
-        long Migrate(IMigrationFile migrationFile);
-        long Migrate(IEnumerable<IMigrationFile> migrationFiles);
-        long Migrate(Assembly assembly, string nameSpace);
+        string Migrate(IMigrationFile migrationFile);
+        string Migrate(IEnumerable<IMigrationFile> migrationFiles);
+        string Migrate(Assembly assembly, string nameSpace);
         
-        ExecuteIterationResult ExecuteMigrateIteration(long migrationId, MigrateIteration iteration, long currentId);
+        ExecuteIterationResult ExecuteMigrateIteration(string migrationId, MigrateIteration iteration, string currentId);
 
-        long GetLastMigrationID();
+        string GetLastMigrationID();
         void CreateMigrationTable();
         bool IsMigrationTableCreated();
-        void InsertMigrationFingerPrint(long id, string description,IDatabaseTransaction transaction);
+        void InsertMigrationFingerPrint(string id, string description,IDatabaseTransaction transaction);
         
     }
 }

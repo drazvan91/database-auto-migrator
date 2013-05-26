@@ -21,7 +21,10 @@ namespace DatabaseAutoMigrator
         string Unique { get; }
         string PrimaryKey { get; }
         string Identity { get; }
+        string IfExists { get; }
 
         string Default(object defaultvalue);
+
+        
     }
 }

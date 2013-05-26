@@ -26,7 +26,7 @@ namespace DatabaseAutoMigrator
             return table;
         }
 
-        public DropTableCommandModel DropTable(string tableName,bool ifExists=false)
+        public DropTableCommandModel DropTable(string tableName,bool ifExists=true)
         {
             var table = new DropTableCommandModel(tableName,ifExists);
             this.Commands.Add(table);

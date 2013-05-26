@@ -31,7 +31,7 @@ namespace ConsoleTest
             string connection = @"Server=.\SQLEXPRESS;Database=MigTest1;Trusted_Connection=True;";
             SqlMigrator migrator = new SqlMigrator(connection);
             MigrationFileTest1 file1 = new MigrationFileTest1();
-            long lastId = migrator.Migrate(file1);
+            string lastId = migrator.Migrate(file1);
             Console.ReadKey();
         }
         static void cuul(object a)

@@ -27,5 +27,6 @@ namespace DatabaseAutoMigrator.Logging
         public abstract void Log(string message, string method = null);
         public abstract void Warn(string message, string method = null);
         public abstract void Error(string message, string method = null);
+        public abstract void EmptyLine();
     }
 }

@@ -10,5 +10,6 @@ namespace DatabaseAutoMigrator.Logging
         void Log(string message, string method=null);
         void Warn(string message, string method=null);
         void Error(string message, string method=null);
+        void EmptyLine();
     }
 }

@@ -29,5 +29,10 @@ namespace DatabaseAutoMigrator.Logging.Impl
         {
             Console.WriteLine(string.Format("[{0}] {1}: ({2} {3}) - {4}", System.DateTime.Now.ToLongTimeString(), type, this.Name, method, message));
         }
+
+        public override void EmptyLine()
+        {
+            Console.WriteLine();
+        }
     }
 }
