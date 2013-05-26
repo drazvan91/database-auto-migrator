@@ -48,7 +48,11 @@ namespace DatabaseAutoMigrator
             var currentMigrationId = lastMigrationId;
             foreach (var iteration in nextMigrations)
             {
-                MigrateIteration rez = (MigrateIteration)iteration.Method.Invoke(migrationFile, new object[0]);
+                MigrateIteration rez = new MigrateIteration();
+                rez.Description=(string)iteration.Method.Invoke(migrationFile, 
+                    new object[]{rez})
+                    ?? "no description";
+                
                 logger.Log("starting execute migration #" + iteration.Id, "migrate");
                 var result = this.ExecuteMigrateIteration(iteration.Id, rez, currentMigrationId);
                 if (result.Success == false)

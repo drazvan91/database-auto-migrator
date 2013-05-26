@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseMigrator.cs" />
+    <Compile Include="Commands\AlterTableCommandModel.cs" />
     <Compile Include="Commands\DropTableCommandModel.cs" />
     <Compile Include="Commands\Factories\BaseGenericCommandFactory.cs" />
     <Compile Include="Commands\Factories\ICommandFactory.cs" />

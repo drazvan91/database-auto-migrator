@@ -17,6 +17,8 @@ namespace DatabaseAutoMigrator.Commands.Factories
                 return this.RawCommand(model as RawCommandModel);
             else if (model is InsertCommandModel)
                 return this.Insert(model as InsertCommandModel);
+            else if (model is AlterTableCommandModel)
+                return this.AlterTable(model as AlterTableCommandModel);
             throw new Exception("Unknown command");
         }
 
@@ -24,5 +26,6 @@ namespace DatabaseAutoMigrator.Commands.Factories
         public abstract TCommand DropTable(DropTableCommandModel model);
         public abstract TCommand RawCommand(RawCommandModel model);
         public abstract TCommand Insert(InsertCommandModel model);
+        public abstract TCommand AlterTable(AlterTableCommandModel model);
     }
 }

@@ -35,8 +35,7 @@ namespace DatabaseAutoMigrator.Commands
             {
                 AllowNull=allowNull,
                 Name=name,
-                Type=type,
-                Length=0
+                Type=type
             };
             this.Columns.Add(c);
             return this;

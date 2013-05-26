@@ -9,5 +9,6 @@ namespace DatabaseAutoMigrator.Commands.Factories
         TCommand DropTable(DropTableCommandModel model);
         TCommand RawCommand(RawCommandModel model);
         TCommand Insert(InsertCommandModel model);
+        TCommand AlterTable(AlterTableCommandModel model);
     }
 }
