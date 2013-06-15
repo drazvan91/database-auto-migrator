@@ -1,13 +1,13 @@
 ﻿
 namespace DatabaseAutoMigrator.Models
 {
-    public class Column
+    public class ColumnDefinition
     {
         public string Name { get; set; }
-        public ColumnDataType Type { get; set; }
+        public DbType Type { get; set; }
         public bool AllowNull { get; set; }
         public bool AutoIncrement { get; set; }
-        public int? Length { get; set; }
+        public int? Size { get; set; }
         public int? Precision { get; set; }
         public int? Scale { get; set; }
 

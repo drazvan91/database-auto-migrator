@@ -1,24 +1,31 @@
 ﻿using DatabaseAutoMigrator.DatabaseAccess;
-using DatabaseAutoMigrator.Models.Commands;
+using DatabaseAutoMigrator.Models.Expressions;
 
 namespace DatabaseAutoMigrator
 {
-    public abstract class BaseDatabaseContext<TCommand,TReader>:IDatabaseContext
-        where TCommand: IDatabaseCommand
-        where TReader: IDatabaseReader
+    public abstract class BaseDatabaseContext:IDatabaseContext
     {
-        protected IDatabaseProvider<TCommand, TReader> Provider { get; private set; }
-        protected ICommandFactory<TCommand> Factory { get; set; }
+        public IDatabaseProvider DatabaseProvider { get; private set; }
+        protected ICommandGenerator Factory { get; set; }
 
-        public BaseDatabaseContext(IDatabaseProvider<TCommand, TReader> provider)
+        public BaseDatabaseContext(IDatabaseProvider provider,ICommandGenerator factory)
         {
-            this.Provider = provider;
+            this.DatabaseProvider = provider;
+            this.Factory = factory;
+        }
+        protected int exec(DatabaseCommand databaseCommand)
+        {
+            return DatabaseProvider.ExecuteCommand(databaseCommand);
+        }
+        private IDatabaseReader execReader(DatabaseCommand databaseCommand)
+        {
+            return DatabaseProvider.ExecuteReaderCommand(databaseCommand);
         }
 
-        public virtual void CreateTable(CreateTableCommandModel model)
+        public virtual void CreateTable(CreateTableExpression model)
         {
-            var command = Factory.CreateTable(model);
-            Provider.ExecuteCommand(command);
+            var command = Factory.GenerateCreateTable(model);
+            exec(command);
         }
 
         public virtual bool TableExists(string tableName)
@@ -26,39 +33,74 @@ namespace DatabaseAutoMigrator
             throw new System.NotImplementedException();
         }
 
-        public virtual void DropTable(string tableName, bool ifExists)
+        public virtual void DropTable(string tableName)
         {
-            Provider.ExecuteCommand(Factory.DropTable(tableName, ifExists));
+            exec(Factory.GenerateDropTable(tableName));
         }
 
-        public virtual void AlterTable(AlterTableCommandModel model)
+        public virtual void AlterTable(AlterTableExpression model)
         {
-            Provider.ExecuteCommand(Factory.AlterTable(model));
+            exec(Factory.GenerateAlterTable(model));
         }
 
         public virtual int ExecuteQuery(string text)
         {
-            return Provider.ExecuteCommand(Factory.RawCommand(text));
+            return exec(Factory.GenerateRawCommand(text));
         }
 
-        public virtual int ExecuteQuery(RawCommandModel model)
+        public virtual int ExecuteQuery(RawCommandExpression model)
         {
-            return Provider.ExecuteCommand(Factory.RawCommand(model));
+            return exec(Factory.GenerateRawCommand(model));
         }
 
         public virtual IDatabaseReader ExecuteReader(string text)
         {
-            return Provider.ExecuteReaderCommand(text);
+            return DatabaseProvider.ExecuteReaderCommand(text);
         }
 
-        public virtual IDatabaseReader ExecuteReader(RawCommandModel model)
+        public virtual IDatabaseReader ExecuteReader(RawCommandExpression model)
         {
-            return Provider.ExecuteReaderCommand(Factory.RawCommand(model));
+            return execReader(Factory.GenerateRawCommand(model));
         }
 
-        public virtual int InsertRow(InsertCommandModel model)
+        public virtual int InsertRow(InsertExpression model)
         {
-            return Provider.ExecuteCommand(Factory.Insert(model));
+            return exec(Factory.GenerateInsert(model));
+        }
+
+        public void RenameTable(string oldName, string newName)
+        {
+            exec(Factory.GenerateRenameTable(oldName, newName));
+        }
+
+        public void AddColumn(string tableName, string columnName, Models.DbType type, bool allowNull = true)
+        {
+            exec(Factory.GenerateAddColumn(tableName, columnName, type, allowNull));
+        }
+
+        public void AddColumn(string tableName, string columnName, Models.DbType type, int length, bool allowNull = true)
+        {
+            exec(Factory.GenerateAddColumn(tableName, columnName, type, length, allowNull));
+        }
+
+        public void DropColumn(string tableName, string columnName)
+        {
+            exec(Factory.GenerateDropColumn(tableName, columnName));
+        }
+
+        public void AlterColumn(string tableName, string columnName, Models.DbType type, bool allowNull = true)
+        {
+            exec(Factory.GenerateAlterColumn(tableName, columnName, type, allowNull));
+        }
+
+        public void AlterColumn(string tableName, string columnName, Models.DbType type, int length, bool allowNull = true)
+        {
+            exec(Factory.GenerateAlterColumn(tableName, columnName, type, length, allowNull));
+        }
+
+        public void RenameColumn(string tableName, string oldName, string newName)
+        {
+            exec(Factory.GenerateRenameColumn(tableName, oldName, newName));
         }
     }
 }

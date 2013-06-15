@@ -2,15 +2,13 @@
 
 namespace DatabaseAutoMigrator.DatabaseAccess
 {
-    public interface IDatabaseProvider<TCommand, TReader> : IDisposable
-        where TCommand: IDatabaseCommand
-        where TReader: IDatabaseReader
+    public interface IDatabaseProvider : IDisposable
     {
-        int ExecuteCommand(TCommand command);
+        int ExecuteCommand(DatabaseCommand command);
         int ExecuteCommand(string text);
 
-        TReader ExecuteReaderCommand(TCommand command);
-        TReader ExecuteReaderCommand(string text);
+        IDatabaseReader ExecuteReaderCommand(DatabaseCommand command);
+        IDatabaseReader ExecuteReaderCommand(string text);
 
         void StartTransaction(string transactionName);
         void CommitTransaction();

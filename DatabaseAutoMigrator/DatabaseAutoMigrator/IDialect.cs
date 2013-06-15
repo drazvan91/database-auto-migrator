@@ -3,10 +3,6 @@ namespace DatabaseAutoMigrator
 {
     public interface IDialect
     {
-        string MapDataType(ColumnDataType type);
-        string MapDataType(ColumnDataType type, int length);
-        string MapDataType(ColumnDataType type, int length, int precision, int scale);
-
         /*bool ColumnNameNeedsQuote { get; }
         bool TableNameNeedsQuote { get; }
         bool ConstraintNameNeedsQuote { get; }

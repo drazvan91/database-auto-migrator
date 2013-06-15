@@ -5,29 +5,28 @@ using System.Reflection;
 using DatabaseAutoMigrator.DatabaseAccess;
 using DatabaseAutoMigrator.Logging;
 using DatabaseAutoMigrator.Models;
-using DatabaseAutoMigrator.Models.Commands;
+using DatabaseAutoMigrator.Models.Expressions;
 
 namespace DatabaseAutoMigrator
 {
-    public abstract class BaseMigrator<TCommand,TReader> : IMigrator
-        where TCommand: IDatabaseCommand
-        where TReader:IDatabaseReader
+    public abstract class BaseMigrator : IMigrator
     {
         public string MigrationTableName = "DatabaseAutoMigrator";
 
-        protected BaseDatabaseContext<TCommand,TReader> DatabaseContext { get; set; }
-        protected IDatabaseProvider<TCommand,TReader> DatabaseProvider {get;set;}
+        protected IDatabaseContext DatabaseContext { get; private set; }
+        protected IDatabaseProvider DatabaseProvider { get { return this.DatabaseContext.DatabaseProvider; } }
+        private ILogger Logger { get; set; }
 
-        private ILogger logger { get; set; }
-
-        public BaseMigrator()
+        public BaseMigrator(IDatabaseContext databaseContext)
         {
-            logger = LoggerFactory.Current.Get("BaseMigrator");
+            Logger = LoggerFactory.Current.Get("BaseMigrator");
+            this.DatabaseContext = databaseContext;
+            CreateMigrationTable();
         }
 
         public string Migrate(IMigrationFile migrationFile)
         {
-            logger.Log("starting migration from single file", "migrate");
+            Logger.Log("starting migration from single file", "migrate");
             
             var methods = migrationFile.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance);
             var allMigrations = (from m in methods
@@ -43,35 +42,35 @@ namespace DatabaseAutoMigrator
         }
         private string migrateMethods(IEnumerable<MigrateIteration> methods)
         {
-            logger.Log("getting last migration id", "migrate");
+            Logger.Log("getting last migration id", "migrate");
             string lastMigrationId = this.GetLastMigrationID();
-            logger.Log("last id=" + lastMigrationId, "migrate");
+            Logger.Log("last id=" + lastMigrationId, "migrate");
 
             var nextMigrations = (from m in methods
                                   where string.Compare(m.Id ,lastMigrationId)>0
                                   orderby m.Id
                                   select m);
-            logger.Log("number of valid migration methods: " + nextMigrations.Count(), "migrate");
+            Logger.Log("number of valid migration methods: " + nextMigrations.Count(), "migrate");
 
             var currentMigrationId = lastMigrationId;
             foreach (var iteration in nextMigrations)
             {
-                logger.EmptyLine();
-                logger.Log("starting execute migration #" + iteration.Id, "migrate");
+                Logger.EmptyLine();
+                Logger.Log("starting execute migration #" + iteration.Id, "migrate");
                 var result = this.ExecuteMigrateIteration(iteration, currentMigrationId);
                 if (result.Success == false)
                 {
-                    logger.EmptyLine();
-                    logger.Log("Error at migration #" + iteration.Id + ". " + result.Error.Message, "migrate");
+                    Logger.EmptyLine();
+                    Logger.Log("Error at migration #" + iteration.Id + ". " + result.Error.Message, "migrate");
                     break;
                 }
                 else
                 {
                     currentMigrationId = iteration.Id;
                 }
-                logger.EmptyLine();
+                Logger.EmptyLine();
             }
-            logger.Log("migration finished with id: " + currentMigrationId);
+            Logger.Log("migration finished with id: " + currentMigrationId);
             return currentMigrationId;
         }
         public string Migrate(IEnumerable<IMigrationFile> migrationFiles)
@@ -122,12 +121,15 @@ namespace DatabaseAutoMigrator
 
         public virtual void CreateMigrationTable()
         {
-            CreateTableCommandModel table = new CreateTableCommandModel(this.MigrationTableName)
-                .Column("Id", ColumnDataType.String,20,false)
-                .Column("Executed", ColumnDataType.DateTime, false)
-                .Column("Description", ColumnDataType.String, 500)
-                .Timestamp();
-            this.DatabaseContext.CreateTable(table);
+            if (!this.IsMigrationTableCreated())
+            {
+                var table = new CreateTableExpression(this.MigrationTableName)
+                    .Column("Id", DbType.String, 20, false)
+                    .Column("Executed", DbType.DateTime, false)
+                    .Column("Description", DbType.String, 500)
+                    .Timestamp();
+                this.DatabaseContext.CreateTable(table);
+            }
         }
 
         public virtual bool IsMigrationTableCreated()
@@ -145,10 +147,10 @@ namespace DatabaseAutoMigrator
 
         public virtual void InsertMigrationFingerPrint(string id, string description)
         {
-            InsertCommandModel cmd = new InsertCommandModel(this.MigrationTableName)
+            var cmd = new InsertExpression(this.MigrationTableName)
                 .Parameter("Id", id)
                 .Parameter("Description", description)
-                .FunctionParameter("Executed", "GETDATE()");
+                .FunctionParameter("Executed", FunctionType.CurrentDateTime);
             this.DatabaseContext.InsertRow(cmd);
         }
         #endregion

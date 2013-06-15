@@ -1,30 +1,30 @@
-﻿
-using DatabaseAutoMigrator.Models.Commands;
+﻿using DatabaseAutoMigrator.Models.Expressions;
+
 namespace DatabaseAutoMigrator
 {
     public class CommandHelper
     {
-        public CreateTableCommandModel CreateTable(string tableName)
+        public CreateTableExpression CreateTable(string tableName)
         {
-            var table = new CreateTableCommandModel(tableName);
+            var table = new CreateTableExpression(tableName);
             return table;
         }
 
-        public RawCommandModel RawCommand(string commandText)
+        public RawCommandExpression RawCommand(string commandText)
         {
-            var raw = new RawCommandModel(commandText);
+            var raw = new RawCommandExpression(commandText);
             return raw;
         }
 
-        public InsertCommandModel InsertRow(string tableName)
+        public InsertExpression InsertRow(string tableName)
         {
-            var insert = new InsertCommandModel(tableName);
+            var insert = new InsertExpression(tableName);
             return insert;
         }
 
-        public AlterTableCommandModel AlterTable(string tableName)
+        public AlterTableExpression AlterTable(string tableName)
         {
-            var alter = new AlterTableCommandModel(tableName);
+            var alter = new AlterTableExpression(tableName);
             return alter;
         }
     }
