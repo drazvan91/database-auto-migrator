@@ -1,4 +1,5 @@
 ﻿using DatabaseAutoMigrator.DatabaseAccess;
+using DatabaseAutoMigrator.Models;
 using DatabaseAutoMigrator.Models.Expressions;
 
 namespace DatabaseAutoMigrator
@@ -18,7 +19,8 @@ namespace DatabaseAutoMigrator
         DatabaseCommand GenerateAlterColumn(string tableName, string columnName, Models.DbType type, bool allowNull);
         DatabaseCommand GenerateAlterColumn(string tableName, string columnName, Models.DbType type, int length, bool allowNull);
         DatabaseCommand GenerateRenameColumn(string tableName, string oldName, string newName);
-
         DatabaseCommand GenerateTableExists(string tableName);
+
+        DatabaseCommand GenerateCreateForeignKey(ForeignKeyDefinition model);
     }
 }

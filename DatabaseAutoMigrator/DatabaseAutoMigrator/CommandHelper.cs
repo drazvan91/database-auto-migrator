@@ -1,4 +1,5 @@
-﻿using DatabaseAutoMigrator.Models.Expressions;
+﻿using DatabaseAutoMigrator.Models;
+using DatabaseAutoMigrator.Models.Expressions;
 
 namespace DatabaseAutoMigrator
 {
@@ -26,6 +27,11 @@ namespace DatabaseAutoMigrator
         {
             var alter = new AlterTableExpression(tableName);
             return alter;
+        }
+
+        public ForeignKeyDefinition CreateForeignKey(string name, string primaryTable, string foreignTable)
+        {
+            return new ForeignKeyDefinition(name, primaryTable, foreignTable);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace DatabaseAutoMigrator.Providers.Sql
             return string.Format("[{0}]", name);
         }
 
-        public string QuoteContraintName(string name)
+        public string QuoteConstraintName(string name)
         {
             return string.Format("[{0}]", name);
         }

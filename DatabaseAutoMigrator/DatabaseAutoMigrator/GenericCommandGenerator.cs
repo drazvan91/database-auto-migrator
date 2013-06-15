@@ -161,5 +161,29 @@ namespace DatabaseAutoMigrator
         {
             return new DatabaseCommand(string.Format(TableExistsFormat, tableName));
         }
+
+
+        public DatabaseCommand GenerateCreateForeignKey(Models.ForeignKeyDefinition model)
+        {
+            string pColumns = string.Join(",", (from c in model.Columns.Keys
+                                                orderby c
+                                                select c));
+            string fColumns = string.Join(",", (from c in model.Columns.Keys
+                                                orderby c
+                                                select model.Columns[c]));
+
+
+            string cmd= string.Format(
+                CreateForeignKeyConstraintFormat,
+                Dialect.QuoteTableName(model.ForeignTable),
+                Dialect.QuoteConstraintName(model.Name),
+                fColumns,
+                Dialect.QuoteTableName(model.PrimaryTable),
+                pColumns,"",""//,
+                //FormatCascade("DELETE", expression.ForeignKey.OnDelete),
+                //FormatCascade("UPDATE", expression.ForeignKey.OnUpdate)
+                );
+            return new DatabaseCommand(cmd);
+        }
     }
 }

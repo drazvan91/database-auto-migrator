@@ -116,5 +116,15 @@ namespace DatabaseAutoMigrator.Tests
             Assert.AreEqual("09_02", s);
             migrator.Dispose();
         }
+        [TestMethod]
+        public void TestCreateForeignKey()
+        {
+            Sql2008Migrator migrator = new Sql2008Migrator(connectionString);
+            string s = migrator.Migrate(new MigrationFile_10_CreateForeignKey());
+            Assert.AreEqual("10_02", s);
+            s = migrator.Migrate(new MigrationFile_10_CreateForeignKey());
+            Assert.AreEqual("10_02", s);
+            migrator.Dispose();
+        }
     }
 }

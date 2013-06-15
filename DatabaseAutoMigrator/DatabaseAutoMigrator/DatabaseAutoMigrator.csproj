@@ -54,6 +54,7 @@
     <Compile Include="Models\Expressions\AlterTableExpression.cs" />
     <Compile Include="Models\Expressions\BaseMigrationExpression.cs" />
     <Compile Include="Models\Expressions\CreateTableExpression.cs" />
+    <Compile Include="Models\ForeignKeyDefinition.cs" />
     <Compile Include="Models\FunctionType.cs" />
     <Compile Include="Models\Expressions\InsertExpression.cs" />
     <Compile Include="Models\Expressions\RawCommandExpression.cs" />
@@ -72,7 +73,7 @@
     <Compile Include="Logging\Impl\ConsoleLogger.cs" />
     <Compile Include="Logging\LoggerFactory.cs" />
     <Compile Include="MigrateIteration.cs" />
-    <Compile Include="Models\Column.cs" />
+    <Compile Include="Models\ColumnDefinition.cs" />
     <Compile Include="Models\DbType.cs" />
     <Compile Include="Models\ColumnParameter.cs" />
     <Compile Include="Providers\Sql\BaseSqlMigrator.cs" />

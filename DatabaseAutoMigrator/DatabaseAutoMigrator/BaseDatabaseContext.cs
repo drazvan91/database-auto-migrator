@@ -106,5 +106,11 @@ namespace DatabaseAutoMigrator
         {
             exec(Factory.GenerateRenameColumn(tableName, oldName, newName));
         }
+
+
+        public void CreateForeignKey(Models.ForeignKeyDefinition model)
+        {
+            exec(Factory.GenerateCreateForeignKey(model));
+        }
     }
 }

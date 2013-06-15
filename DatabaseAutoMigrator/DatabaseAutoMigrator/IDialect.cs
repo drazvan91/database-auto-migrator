@@ -10,7 +10,7 @@ namespace DatabaseAutoMigrator
 
         string QuoteColumnName(string name);
         string QuoteTableName(string name);
-        string QuoteContraintName(string name);
+        string QuoteConstraintName(string name);
 
         string Null { get; }
         string NotNull { get; }
@@ -20,7 +20,5 @@ namespace DatabaseAutoMigrator
         string IfExists { get; }
 
         string Default(object defaultvalue);
-
-        
     }
 }
