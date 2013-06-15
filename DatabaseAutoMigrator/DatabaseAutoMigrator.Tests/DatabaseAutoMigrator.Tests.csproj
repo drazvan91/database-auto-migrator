@@ -52,15 +52,28 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="TestFiles\MigrationFileTest1.cs" />
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="TestFiles\MigrationFile_09_RenameTable.cs" />
+    <Compile Include="TestFiles\MigrationFile_08_TableExists.cs" />
+    <Compile Include="TestFiles\MigrationFile_07_RenameColumn.cs" />
+    <Compile Include="TestFiles\MigrationFile_06_DropColumn.cs" />
+    <Compile Include="TestFiles\MigrationFile_05_AlterColumn.cs" />
+    <Compile Include="TestFiles\MigrationFile_04_AddColumn.cs" />
+    <Compile Include="TestFiles\MigrationFile_03_DropTable.cs" />
+    <Compile Include="TestFiles\MigrationFile_02_AlterTable.cs" />
+    <Compile Include="TestFiles\MigrationFile_01_CreateTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sql2008MigrationTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DatabaseAutoMigrator\DatabaseAutoMigrator.csproj">
       <Project>{8aafb3b1-e748-44a5-87b7-259944211d8e}</Project>
       <Name>DatabaseAutoMigrator</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="OrderedTest1.orderedtest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

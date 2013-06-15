@@ -63,5 +63,10 @@ namespace ConsoleTest
             db.CreateTable(c);
             return "some tests";
         }
+        public string Migrate_7(IDatabaseContext db)
+        {
+            db.RenameTable("Marius", "Mariusica");
+            return "Rename marius table";
+        }
     }
 }

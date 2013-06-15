@@ -30,7 +30,11 @@ namespace DatabaseAutoMigrator
 
         public virtual bool TableExists(string tableName)
         {
-            throw new System.NotImplementedException();
+            var command = Factory.GenerateTableExists(tableName);
+            using (var reader = execReader(command))
+            {
+                return reader.Read();
+            }
         }
 
         public virtual void DropTable(string tableName)

@@ -42,5 +42,28 @@ namespace DatabaseAutoMigrator
         {
             return string.Join(",", columns.Select(c => Generate(c)));
         }
+
+
+        public string Generate(string columnName, DbType type, bool allowNull)
+        {
+            string t = TypeMapper.MapDataType(type);
+            string ret = string.Format("{0} {1} {2}",
+                Dialect.QuoteColumnName(columnName),
+                t,
+                allowNull ? Dialect.Null : Dialect.NotNull
+                );
+            return ret;
+        }
+
+        public string Generate(string columnName, DbType type, int length, bool allowNull)
+        {
+            string t = TypeMapper.MapDataType(type, length);
+            string ret = string.Format("{0} {1} {2}",
+                Dialect.QuoteColumnName(columnName),
+                t,
+                allowNull ? Dialect.Null : Dialect.NotNull
+                );
+            return ret;
+        }
     }
 }

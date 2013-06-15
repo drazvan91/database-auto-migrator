@@ -21,7 +21,8 @@ namespace DatabaseAutoMigrator
 
         protected virtual string CreateTableFormat { get { return "CREATE TABLE {0} ({1})"; } }
         protected virtual string DropTableFormat { get { return "DROP TABLE {0}"; } }
-        
+        protected virtual string TableExistsFormat { get { return @"SELECT * FROM INFORMATION_SCHEMA.TABLES where TABLE_NAME = '{0}'"; } }
+
         protected virtual string AddColumnFormat { get { return "ALTER TABLE {0} ADD COLUMN {1}"; } }
         protected virtual string DropColumnFormat { get { return "ALTER TABLE {0} DROP COLUMN {1}"; } }
         protected virtual string AlterColumnFormat { get { return "ALTER TABLE {0} ALTER COLUMN {1}"; } }
@@ -88,12 +89,12 @@ namespace DatabaseAutoMigrator
 
         public virtual DatabaseCommand GenerateRawCommand(RawCommandExpression model)
         {
-            throw new NotImplementedException();
+            return new DatabaseCommand(model.CommandText);
         }
 
         public virtual DatabaseCommand GenerateRawCommand(string commandText)
         {
-            throw new NotImplementedException();
+            return new DatabaseCommand(commandText);
         }
 
         public virtual DatabaseCommand GenerateInsert(InsertExpression model)
@@ -116,40 +117,49 @@ namespace DatabaseAutoMigrator
             return ret;
         }
 
-
         public DatabaseCommand GenerateRenameTable(string oldName, string newName)
         {
-            throw new NotImplementedException();
+            string cmd=string.Format(RenameTableFormat,oldName,newName);
+            return new DatabaseCommand(cmd);
         }
 
         public DatabaseCommand GenerateAddColumn(string tableName, string columnName, Models.DbType type, bool allowNull)
         {
-            throw new NotImplementedException();
+            string columnDefinition = ColumnGenerator.Generate(columnName, type, allowNull);
+            return new DatabaseCommand(string.Format(AddColumnFormat, tableName, columnDefinition));
         }
 
         public DatabaseCommand GenerateAddColumn(string tableName, string columnName, Models.DbType type, int length, bool allowNull)
         {
-            throw new NotImplementedException();
+            string columnDefinition = ColumnGenerator.Generate(columnName, type, length, allowNull);
+            return new DatabaseCommand(string.Format(AddColumnFormat, tableName, columnDefinition));
         }
 
         public DatabaseCommand GenerateDropColumn(string tableName, string columnName)
         {
-            throw new NotImplementedException();
+            return new DatabaseCommand(string.Format(DropColumnFormat, tableName, columnName));
         }
 
         public DatabaseCommand GenerateAlterColumn(string tableName, string columnName, Models.DbType type, bool allowNull)
         {
-            throw new NotImplementedException();
+            string columnDefinition = ColumnGenerator.Generate(columnName, type, allowNull);
+            return new DatabaseCommand(string.Format(AlterColumnFormat, tableName, columnDefinition));
         }
 
         public DatabaseCommand GenerateAlterColumn(string tableName, string columnName, Models.DbType type, int length, bool allowNull)
         {
-            throw new NotImplementedException();
+            string columnDefinition = ColumnGenerator.Generate(columnName, type, length, allowNull);
+            return new DatabaseCommand(string.Format(AlterColumnFormat, tableName, columnDefinition));
         }
 
         public DatabaseCommand GenerateRenameColumn(string tableName, string oldName, string newName)
         {
-            throw new NotImplementedException();
+            return new DatabaseCommand(string.Format(RenameColumnFormat, tableName, oldName, newName));
+        }
+
+        public DatabaseCommand GenerateTableExists(string tableName)
+        {
+            return new DatabaseCommand(string.Format(TableExistsFormat, tableName));
         }
     }
 }

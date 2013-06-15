@@ -11,19 +11,14 @@ namespace DatabaseAutoMigrator
         DatabaseCommand GenerateRawCommand(RawCommandExpression model);
         DatabaseCommand GenerateRawCommand(string commandText);
         DatabaseCommand GenerateInsert(InsertExpression model);
-
         DatabaseCommand GenerateRenameTable(string oldName, string newName);
-
         DatabaseCommand GenerateAddColumn(string tableName, string columnName, Models.DbType type, bool allowNull);
-
         DatabaseCommand GenerateAddColumn(string tableName, string columnName, Models.DbType type, int length, bool allowNull);
-
         DatabaseCommand GenerateDropColumn(string tableName, string columnName);
-
         DatabaseCommand GenerateAlterColumn(string tableName, string columnName, Models.DbType type, bool allowNull);
-
         DatabaseCommand GenerateAlterColumn(string tableName, string columnName, Models.DbType type, int length, bool allowNull);
-
         DatabaseCommand GenerateRenameColumn(string tableName, string oldName, string newName);
+
+        DatabaseCommand GenerateTableExists(string tableName);
     }
 }

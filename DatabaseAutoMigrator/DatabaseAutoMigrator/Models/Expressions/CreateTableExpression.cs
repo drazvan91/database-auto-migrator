@@ -58,8 +58,7 @@ namespace DatabaseAutoMigrator.Models.Expressions
         }
         public CreateTableExpression Timestamp(string columnName)
         {
-            this.TimestampColumnName = columnName;
-            return this;
+            return this.Column(columnName, DbType.Timestamp, false);
         }
     }
 }

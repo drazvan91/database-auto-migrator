@@ -124,7 +124,7 @@ namespace DatabaseAutoMigrator
             if (!this.IsMigrationTableCreated())
             {
                 var table = new CreateTableExpression(this.MigrationTableName)
-                    .Column("Id", DbType.String, 20, false)
+                    .Column("Id", DbType.String, 50, false)
                     .Column("Executed", DbType.DateTime, false)
                     .Column("Description", DbType.String, 500)
                     .Timestamp();
