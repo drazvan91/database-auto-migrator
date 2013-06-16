@@ -112,5 +112,21 @@ namespace DatabaseAutoMigrator
         {
             exec(Factory.GenerateCreateForeignKey(model));
         }
+
+        public void CreatePrimaryKey(Models.ConstraintDefinition model)
+        {
+            exec(Factory.GenerateCreatePrimaryKey(model));
+        }
+
+
+        public void CreateUniqueConstraint(Models.ConstraintDefinition model)
+        {
+            exec(Factory.GenerateCreateUniqueConstraint(model));
+        }
+
+        public void DropConstraint(string table, string constraintName)
+        {
+            exec(Factory.GenerateDropConstraint(table, constraintName));
+        }
     }
 }

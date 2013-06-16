@@ -21,6 +21,9 @@ namespace DatabaseAutoMigrator
         DatabaseCommand GenerateRenameColumn(string tableName, string oldName, string newName);
         DatabaseCommand GenerateTableExists(string tableName);
 
+        DatabaseCommand GenerateCreatePrimaryKey(ConstraintDefinition model);
         DatabaseCommand GenerateCreateForeignKey(ForeignKeyDefinition model);
+        DatabaseCommand GenerateCreateUniqueConstraint(ConstraintDefinition model);
+        DatabaseCommand GenerateDropConstraint(string table, string constraintName);
     }
 }

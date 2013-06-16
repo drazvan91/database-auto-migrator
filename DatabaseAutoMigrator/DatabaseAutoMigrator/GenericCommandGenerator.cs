@@ -117,47 +117,47 @@ namespace DatabaseAutoMigrator
             return ret;
         }
 
-        public DatabaseCommand GenerateRenameTable(string oldName, string newName)
+        public virtual DatabaseCommand GenerateRenameTable(string oldName, string newName)
         {
             string cmd=string.Format(RenameTableFormat,oldName,newName);
             return new DatabaseCommand(cmd);
         }
 
-        public DatabaseCommand GenerateAddColumn(string tableName, string columnName, Models.DbType type, bool allowNull)
+        public virtual DatabaseCommand GenerateAddColumn(string tableName, string columnName, Models.DbType type, bool allowNull)
         {
             string columnDefinition = ColumnGenerator.Generate(columnName, type, allowNull);
             return new DatabaseCommand(string.Format(AddColumnFormat, tableName, columnDefinition));
         }
 
-        public DatabaseCommand GenerateAddColumn(string tableName, string columnName, Models.DbType type, int length, bool allowNull)
+        public virtual DatabaseCommand GenerateAddColumn(string tableName, string columnName, Models.DbType type, int length, bool allowNull)
         {
             string columnDefinition = ColumnGenerator.Generate(columnName, type, length, allowNull);
             return new DatabaseCommand(string.Format(AddColumnFormat, tableName, columnDefinition));
         }
 
-        public DatabaseCommand GenerateDropColumn(string tableName, string columnName)
+        public virtual DatabaseCommand GenerateDropColumn(string tableName, string columnName)
         {
             return new DatabaseCommand(string.Format(DropColumnFormat, tableName, columnName));
         }
 
-        public DatabaseCommand GenerateAlterColumn(string tableName, string columnName, Models.DbType type, bool allowNull)
+        public virtual DatabaseCommand GenerateAlterColumn(string tableName, string columnName, Models.DbType type, bool allowNull)
         {
             string columnDefinition = ColumnGenerator.Generate(columnName, type, allowNull);
             return new DatabaseCommand(string.Format(AlterColumnFormat, tableName, columnDefinition));
         }
 
-        public DatabaseCommand GenerateAlterColumn(string tableName, string columnName, Models.DbType type, int length, bool allowNull)
+        public virtual DatabaseCommand GenerateAlterColumn(string tableName, string columnName, Models.DbType type, int length, bool allowNull)
         {
             string columnDefinition = ColumnGenerator.Generate(columnName, type, length, allowNull);
             return new DatabaseCommand(string.Format(AlterColumnFormat, tableName, columnDefinition));
         }
 
-        public DatabaseCommand GenerateRenameColumn(string tableName, string oldName, string newName)
+        public virtual DatabaseCommand GenerateRenameColumn(string tableName, string oldName, string newName)
         {
             return new DatabaseCommand(string.Format(RenameColumnFormat, tableName, oldName, newName));
         }
 
-        public DatabaseCommand GenerateTableExists(string tableName)
+        public virtual DatabaseCommand GenerateTableExists(string tableName)
         {
             return new DatabaseCommand(string.Format(TableExistsFormat, tableName));
         }
@@ -183,6 +183,37 @@ namespace DatabaseAutoMigrator
                 //FormatCascade("DELETE", expression.ForeignKey.OnDelete),
                 //FormatCascade("UPDATE", expression.ForeignKey.OnUpdate)
                 );
+            return new DatabaseCommand(cmd);
+        }
+
+        public virtual DatabaseCommand GenerateCreatePrimaryKey(Models.ConstraintDefinition model)
+        {
+            string columns = string.Join(",", model.Columns);
+            string cmd = string.Format(
+                CreateConstraintFormat,
+                Dialect.QuoteTableName(model.TableName),
+                Dialect.QuoteConstraintName(model.Name),
+                Dialect.PrimaryKey,
+                columns);
+            return new DatabaseCommand(cmd);
+        }
+
+        public virtual DatabaseCommand GenerateCreateUniqueConstraint(Models.ConstraintDefinition model)
+        {
+            string columns = string.Join(",", model.Columns);
+            string cmd = string.Format(
+                CreateConstraintFormat,
+                Dialect.QuoteTableName(model.TableName),
+                Dialect.QuoteConstraintName(model.Name),
+                Dialect.Unique,
+                columns);
+            return new DatabaseCommand(cmd);
+        }
+
+        public virtual DatabaseCommand GenerateDropConstraint(string table, string constraintName)
+        {
+            string cmd = string.Format(DeleteConstraintFormat,
+                Dialect.QuoteTableName(table), Dialect.QuoteConstraintName(constraintName));
             return new DatabaseCommand(cmd);
         }
     }

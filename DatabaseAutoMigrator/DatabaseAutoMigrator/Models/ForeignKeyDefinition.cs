@@ -9,10 +9,20 @@ namespace DatabaseAutoMigrator.Models
         internal string PrimaryTable { get; set; }
         internal IDictionary<string, string> Columns { get; set; }
 
+        
+        public ForeignKeyDefinition(string foreignTable,string primaryTable):
+            this(
+                foreignTable,
+                primaryTable,
+                string.Format("FK_{0}_{1}",foreignTable,primaryTable)
+            )
+        {
+        }
+        
         /// <param name="name">ex: FK_table1_table2</param>
         /// <param name="foreignTable">ex: table2</param>
         /// <param name="primaryTable">ex: table1</param>
-        public ForeignKeyDefinition(string name, string foreignTable,string primaryTable)
+        public ForeignKeyDefinition( string foreignTable,string primaryTable,string name)
         {
             this.Name = name;
             this.PrimaryTable = primaryTable;

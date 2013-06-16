@@ -76,6 +76,7 @@
     <Compile Include="Models\ColumnDefinition.cs" />
     <Compile Include="Models\DbType.cs" />
     <Compile Include="Models\ColumnParameter.cs" />
+    <Compile Include="Models\ConstraintDefinition.cs" />
     <Compile Include="Providers\Sql\BaseSqlMigrator.cs" />
     <Compile Include="Providers\Sql\Sql2005\Sql2005CommandGenerator.cs" />
     <Compile Include="Providers\Sql\Sql2005\Sql2005DatabaseContext.cs" />

@@ -52,7 +52,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="TestFiles\MigrationFile_10_CreateForeignKey.cs" />
+    <Compile Include="TestFiles\MigrationFile_13_DropConstraint.cs" />
+    <Compile Include="TestFiles\MigrationFile_12_CreateUnique.cs" />
+    <Compile Include="TestFiles\MigrationFile_10_CreatePrimaryKey.cs" />
+    <Compile Include="TestFiles\MigrationFile_11_CreateForeignKey.cs" />
     <Compile Include="TestFiles\MigrationFile_09_RenameTable.cs" />
     <Compile Include="TestFiles\MigrationFile_08_TableExists.cs" />
     <Compile Include="TestFiles\MigrationFile_07_RenameColumn.cs" />

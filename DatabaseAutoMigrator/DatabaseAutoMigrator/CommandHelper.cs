@@ -29,9 +29,32 @@ namespace DatabaseAutoMigrator
             return alter;
         }
 
-        public ForeignKeyDefinition CreateForeignKey(string name, string primaryTable, string foreignTable)
+        public ConstraintDefinition PrimaryKey(string tableName)
         {
-            return new ForeignKeyDefinition(name, primaryTable, foreignTable);
+            return new ConstraintDefinition(tableName,"PK_"+tableName);
         }
+        public ConstraintDefinition PrimaryKey(string tableName,string constraintName)
+        {
+            return new ConstraintDefinition(tableName,constraintName);
+        }
+
+        public ForeignKeyDefinition ForeignKey(string primaryTable, string foreignTable)
+        {
+            return new ForeignKeyDefinition(primaryTable, foreignTable);
+        }
+        public ForeignKeyDefinition ForeignKey(string primaryTable, string foreignTable, string name)
+        {
+            return new ForeignKeyDefinition(primaryTable, foreignTable,name);
+        }
+
+        public ConstraintDefinition Unique(string tableName)
+        {
+            return new ConstraintDefinition(tableName,"UK_"+tableName);
+        }
+        public ConstraintDefinition Unique(string tableName, string constraintName)
+        {
+            return new ConstraintDefinition(tableName, constraintName);
+        }
+
     }
 }

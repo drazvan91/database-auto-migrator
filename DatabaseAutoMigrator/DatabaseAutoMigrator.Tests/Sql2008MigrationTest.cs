@@ -116,14 +116,46 @@ namespace DatabaseAutoMigrator.Tests
             Assert.AreEqual("09_02", s);
             migrator.Dispose();
         }
+
+        [TestMethod]
+        public void TestCreatePrimaryKey()
+        {
+            Sql2008Migrator migrator = new Sql2008Migrator(connectionString);
+            string s = migrator.Migrate(new MigrationFile_10_CreatePrimaryKey());
+            Assert.AreEqual("10_02", s);
+            s = migrator.Migrate(new MigrationFile_10_CreatePrimaryKey());
+            Assert.AreEqual("10_02", s);
+            migrator.Dispose();
+        }
+
         [TestMethod]
         public void TestCreateForeignKey()
         {
             Sql2008Migrator migrator = new Sql2008Migrator(connectionString);
-            string s = migrator.Migrate(new MigrationFile_10_CreateForeignKey());
-            Assert.AreEqual("10_02", s);
-            s = migrator.Migrate(new MigrationFile_10_CreateForeignKey());
-            Assert.AreEqual("10_02", s);
+            string s = migrator.Migrate(new MigrationFile_11_CreateForeignKey());
+            Assert.AreEqual("11_02", s);
+            s = migrator.Migrate(new MigrationFile_11_CreateForeignKey());
+            Assert.AreEqual("11_02", s);
+            migrator.Dispose();
+        }
+        [TestMethod]
+        public void TestCreateUnique()
+        {
+            Sql2008Migrator migrator = new Sql2008Migrator(connectionString);
+            string s = migrator.Migrate(new MigrationFile_12_CreateUnique());
+            Assert.AreEqual("12_02", s);
+            s = migrator.Migrate(new MigrationFile_12_CreateUnique());
+            Assert.AreEqual("12_02", s);
+            migrator.Dispose();
+        }
+        [TestMethod]
+        public void TestDropConstraint()
+        {
+            Sql2008Migrator migrator = new Sql2008Migrator(connectionString);
+            string s = migrator.Migrate(new MigrationFile_13_DropConstraint());
+            Assert.AreEqual("13_01", s);
+            s = migrator.Migrate(new MigrationFile_13_DropConstraint());
+            Assert.AreEqual("13_01", s);
             migrator.Dispose();
         }
     }

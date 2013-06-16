@@ -21,7 +21,10 @@ namespace DatabaseAutoMigrator
         void AlterColumn(string tableName, string columnName, DbType type, int length, bool allowNull = true);
         void RenameColumn(string tableName, string oldName, string newName);
 
+        void CreatePrimaryKey(ConstraintDefinition model);
         void CreateForeignKey(ForeignKeyDefinition model);
+        void CreateUniqueConstraint(ConstraintDefinition model);
+        void DropConstraint(string table, string constraintName);
 
         int ExecuteQuery(string text);
         int ExecuteQuery(RawCommandExpression model);
