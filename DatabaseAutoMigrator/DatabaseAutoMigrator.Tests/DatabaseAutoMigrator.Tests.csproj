@@ -52,6 +52,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Sql2008Migration_Assembly.cs" />
+    <Compile Include="Helpers\SqlDatabaseHelper.cs" />
+    <Compile Include="Sql2008Migration_MultiFiles.cs" />
     <Compile Include="TestFiles\MigrationFile_13_DropConstraint.cs" />
     <Compile Include="TestFiles\MigrationFile_12_CreateUnique.cs" />
     <Compile Include="TestFiles\MigrationFile_10_CreatePrimaryKey.cs" />
@@ -66,7 +69,7 @@
     <Compile Include="TestFiles\MigrationFile_02_AlterTable.cs" />
     <Compile Include="TestFiles\MigrationFile_01_CreateTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sql2008MigrationTest.cs" />
+    <Compile Include="Sql2008Migration_SingleFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DatabaseAutoMigrator\DatabaseAutoMigrator.csproj">
@@ -75,7 +78,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="OrderedTest1.orderedtest">
+    <None Include="SingleFile_Ordered.orderedtest">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

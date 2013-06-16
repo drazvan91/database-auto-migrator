@@ -75,11 +75,31 @@ namespace DatabaseAutoMigrator
         }
         public string Migrate(IEnumerable<IMigrationFile> migrationFiles)
         {
-            return "";    
+            Logger.Log("starting migration from single file", "migrate");
+
+            var allMigrations = (from mFile in migrationFiles
+                                 let methods = (from method in mFile.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                                                where method.Name.StartsWith("Migrate_")
+                                                select method)
+                                 select methods.Select(m =>
+                                         new MigrateIteration()
+                                         {
+                                             File = mFile,
+                                             Id = m.Name.Remove(0, "Migrate_".Length),
+                                             Method = m
+                                         })
+                                 
+                               ).SelectMany(i => i).ToList();
+            return migrateMethods(allMigrations);
         }
         public string Migrate(Assembly assembly, string nameSpace)
         {
-            return "";
+            Type migrationFileType =typeof(IMigrationFile);
+            var types = (from t in assembly.GetTypes()
+                         where t.Namespace == nameSpace
+                         select (IMigrationFile)Activator.CreateInstance(t));
+
+            return Migrate(types);
         }
 
         public ExecuteIterationResult ExecuteMigrateIteration(MigrateIteration iteration, string currentId)

@@ -8,11 +8,11 @@ using System.Data.SqlClient;
 namespace DatabaseAutoMigrator.Tests
 {
     [TestClass]
-    public class Sql2008MigrationTest
+    public class Sql2008Migration_SingleFile
     {
         static string connectionString = @"Server=.\SQLEXPRESS;Database=UnitTest1;Trusted_Connection=True;";
 
-        static Sql2008MigrationTest()
+        static Sql2008Migration_SingleFile()
         {
             SqlConnection con = new SqlConnection(connectionString);
             con.Open();
@@ -158,5 +158,7 @@ namespace DatabaseAutoMigrator.Tests
             Assert.AreEqual("13_01", s);
             migrator.Dispose();
         }
+
+        
     }
 }
