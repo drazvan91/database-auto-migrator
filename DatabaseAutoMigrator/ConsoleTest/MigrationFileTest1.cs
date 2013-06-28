@@ -7,6 +7,7 @@ namespace ConsoleTest
     {
         public string Migrate_1(IDatabaseContext db)
         {
+            
             var table=Helper.CreateTable("razvan")
                 .Column("Id",DbType.Int64,false)
                 .Column("Name",DbType.String,400,false);

@@ -6,10 +6,10 @@ using System.Diagnostics;
 using System.Data.SqlClient;
 using DatabaseAutoMigrator.Tests.Helpers;
 
-namespace DatabaseAutoMigrator.Tests
+namespace DatabaseAutoMigrator.Tests.Sql2008
 {
     [TestClass]
-    public class Sql2008Migration_Assembly
+    public class Test_Migrate_Assembly
     {
         
         [TestMethod]
@@ -19,10 +19,10 @@ namespace DatabaseAutoMigrator.Tests
             Sql2008Migrator migrator = new Sql2008Migrator(SqlDatabaseHelper.DefaultConnectionString);
             
             var assembly=this.GetType().Assembly;
-            string s = migrator.Migrate(assembly, "DatabaseAutoMigrator.Tests.TestFiles");
+            string s = migrator.Migrate(assembly, "DatabaseAutoMigrator.Tests.TestFiles").EndId;
             Assert.AreEqual("13_01", s);
 
-            s = migrator.Migrate(assembly, "DatabaseAutoMigrator.Tests.TestFiles");
+            s = migrator.Migrate(assembly, "DatabaseAutoMigrator.Tests.TestFiles").EndId;
             Assert.AreEqual("13_01", s);
 
             migrator.Dispose();

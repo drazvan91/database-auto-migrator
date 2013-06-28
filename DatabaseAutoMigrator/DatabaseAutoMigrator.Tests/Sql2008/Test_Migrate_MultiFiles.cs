@@ -1,17 +1,13 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DatabaseAutoMigrator.Providers.Sql;
-using DatabaseAutoMigrator.Tests.TestFiles;
-using System.Diagnostics;
-using System.Data.SqlClient;
+﻿using DatabaseAutoMigrator.Providers.Sql;
 using DatabaseAutoMigrator.Tests.Helpers;
+using DatabaseAutoMigrator.Tests.TestFiles;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DatabaseAutoMigrator.Tests
+namespace DatabaseAutoMigrator.Tests.Sql2008
 {
     [TestClass]
-    public class Sql2008Migration_MultiFiles
+    public class Test_Migrate_MultiFiles
     {
-        
         [TestMethod]
         public void TestMigrateMultipleFiles1()
         {
@@ -23,7 +19,7 @@ namespace DatabaseAutoMigrator.Tests
                 new MigrationFile_02_AlterTable(),
                 new MigrationFile_03_DropTable()
             };
-            string s=migrator.Migrate(files);
+            string s=migrator.Migrate(files).EndId;
             Assert.AreEqual("03_02_DropTable2", s);
 
             files = new IMigrationFile[]{
@@ -32,7 +28,7 @@ namespace DatabaseAutoMigrator.Tests
                 new MigrationFile_06_DropColumn(),
                 new MigrationFile_07_RenameColumn()
             };
-            s = migrator.Migrate(files);
+            s = migrator.Migrate(files).EndId;
             Assert.AreEqual("07_02_RenameColumn", s);
 
             files = new IMigrationFile[]{
@@ -40,7 +36,7 @@ namespace DatabaseAutoMigrator.Tests
                 new MigrationFile_09_RenameTable(),
                 new MigrationFile_10_CreatePrimaryKey()
             };
-            s = migrator.Migrate(files);
+            s = migrator.Migrate(files).EndId;
             Assert.AreEqual("10_02", s);
 
             files = new IMigrationFile[]{
@@ -48,7 +44,7 @@ namespace DatabaseAutoMigrator.Tests
                 new MigrationFile_12_CreateUnique(),
                 new MigrationFile_13_DropConstraint()
             };
-            s = migrator.Migrate(files);
+            s = migrator.Migrate(files).EndId;
             Assert.AreEqual("13_01", s);
 
             migrator.Dispose();
@@ -65,7 +61,7 @@ namespace DatabaseAutoMigrator.Tests
                 new MigrationFile_01_CreateTable(),
                 new MigrationFile_02_AlterTable()
             };
-            string s = migrator.Migrate(files);
+            string s = migrator.Migrate(files).EndId;
             Assert.AreEqual("03_02_DropTable2", s);
 
             files = new IMigrationFile[]{
@@ -74,7 +70,7 @@ namespace DatabaseAutoMigrator.Tests
                 new MigrationFile_05_AlterColumn(),
                 new MigrationFile_06_DropColumn(),
             };
-            s = migrator.Migrate(files);
+            s = migrator.Migrate(files).EndId;
             Assert.AreEqual("07_02_RenameColumn", s);
 
             files = new IMigrationFile[]{
@@ -82,7 +78,7 @@ namespace DatabaseAutoMigrator.Tests
                 new MigrationFile_10_CreatePrimaryKey(),
                 new MigrationFile_09_RenameTable()
             };
-            s = migrator.Migrate(files);
+            s = migrator.Migrate(files).EndId;
             Assert.AreEqual("10_02", s);
 
             files = new IMigrationFile[]{
@@ -90,7 +86,7 @@ namespace DatabaseAutoMigrator.Tests
                 new MigrationFile_11_CreateForeignKey(),
                 new MigrationFile_12_CreateUnique()
             };
-            s = migrator.Migrate(files);
+            s = migrator.Migrate(files).EndId;
             Assert.AreEqual("13_01", s);
 
             files = new IMigrationFile[]{
@@ -108,11 +104,12 @@ namespace DatabaseAutoMigrator.Tests
                 new MigrationFile_10_CreatePrimaryKey(),
                 new MigrationFile_09_RenameTable()
             };
-            s = migrator.Migrate(files);
+            s = migrator.Migrate(files).EndId;
             Assert.AreEqual("13_01", s);
 
             migrator.Dispose();
         }
+
         [TestMethod]
         public void TestMigrateMultipleFiles3()
         {
@@ -134,7 +131,7 @@ namespace DatabaseAutoMigrator.Tests
                 new MigrationFile_11_CreateForeignKey(),
                 new MigrationFile_12_CreateUnique()
             };
-            string s = migrator.Migrate(files);
+            string s = migrator.Migrate(files).EndId;
             Assert.AreEqual("13_01", s);
 
             migrator.Dispose();

@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<OrderedTest name="OrderedTest1" storage="d:\viatafrate\database-auto-migrator\databaseautomigrator\databaseautomigrator.tests\sql2008\orderedtest1.orderedtest" id="3cca869c-b726-41a6-a55e-074afc3cf02b" continueAfterFailure="true" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestLinks>
+    <TestLink id="9356a0b2-ee8a-114e-4e4d-9a096d410b7c" name="TestMigrateMultipleFiles1" storage="..\bin\release\databaseautomigrator.tests.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <TestLink id="f0167b9f-01eb-d904-eab9-7ae945eac088" name="TestMigrateMultipleFiles2" storage="..\bin\release\databaseautomigrator.tests.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <TestLink id="607fedd0-1dea-0392-b255-48299308c0cd" name="TestMigrateMultipleFiles3" storage="..\bin\release\databaseautomigrator.tests.dll" type="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestElement, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.ObjectModel, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  </TestLinks>
+</OrderedTest>

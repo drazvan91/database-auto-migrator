@@ -7,9 +7,9 @@ namespace DatabaseAutoMigrator
 {
     public interface IMigrator:IDisposable
     {
-        string Migrate(IMigrationFile migrationFile);
-        string Migrate(IEnumerable<IMigrationFile> migrationFiles);
-        string Migrate(Assembly assembly, string nameSpace);
+        MigrationResult Migrate(IMigrationFile migrationFile);
+        MigrationResult Migrate(IEnumerable<IMigrationFile> migrationFiles);
+        MigrationResult Migrate(Assembly assembly, string nameSpace);
         
         ExecuteIterationResult ExecuteMigrateIteration(MigrateIteration iteration, string currentId);
 

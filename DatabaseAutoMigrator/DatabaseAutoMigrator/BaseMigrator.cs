@@ -6,6 +6,7 @@ using DatabaseAutoMigrator.DatabaseAccess;
 using DatabaseAutoMigrator.Logging;
 using DatabaseAutoMigrator.Models;
 using DatabaseAutoMigrator.Models.Expressions;
+using System.Diagnostics;
 
 namespace DatabaseAutoMigrator
 {
@@ -24,7 +25,7 @@ namespace DatabaseAutoMigrator
             CreateMigrationTable();
         }
 
-        public string Migrate(IMigrationFile migrationFile)
+        public MigrationResult Migrate(IMigrationFile migrationFile)
         {
             Logger.Log("starting migration from single file", "migrate");
             
@@ -40,10 +41,13 @@ namespace DatabaseAutoMigrator
             return migrateMethods(allMigrations);
             
         }
-        private string migrateMethods(IEnumerable<MigrateIteration> methods)
+        private MigrationResult migrateMethods(IEnumerable<MigrateIteration> methods)
         {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            MigrationResult result = new MigrationResult();
             Logger.Log("getting last migration id", "migrate");
             string lastMigrationId = this.GetLastMigrationID();
+            result.StartId = lastMigrationId;
             Logger.Log("last id=" + lastMigrationId, "migrate");
 
             var nextMigrations = (from m in methods
@@ -53,27 +57,46 @@ namespace DatabaseAutoMigrator
             Logger.Log("number of valid migration methods: " + nextMigrations.Count(), "migrate");
 
             var currentMigrationId = lastMigrationId;
+            bool failed = false;
             foreach (var iteration in nextMigrations)
             {
-                Logger.EmptyLine();
-                Logger.Log("starting execute migration #" + iteration.Id, "migrate");
-                var result = this.ExecuteMigrateIteration(iteration, currentMigrationId);
-                if (result.Success == false)
+                if (!failed)
                 {
                     Logger.EmptyLine();
-                    Logger.Log("Error at migration #" + iteration.Id + ". " + result.Error.Message, "migrate");
-                    break;
+                    Logger.Log("starting execute migration #" + iteration.Id, "migrate");
+                    var iterationResult = this.ExecuteMigrateIteration(iteration, currentMigrationId);
+                    if (iterationResult.Success == false)
+                    {
+                        Logger.EmptyLine();
+                        Logger.Log("Error at migration #" + iteration.Id + ". " + iterationResult.Error.Message, "migrate");
+                        failed = true;
+                    }
+                    else
+                    {
+                        currentMigrationId = iteration.Id;
+                    }
+                    Logger.EmptyLine();
+                    result.Executed.Add(iterationResult);
                 }
                 else
                 {
-                    currentMigrationId = iteration.Id;
+                    result.NotExecuted.Add(new ExecuteIterationResult()
+                    {
+                        Success=false,
+                        Duration=new TimeSpan(0),
+                        Error=null, 
+                        File=iteration.File.GetType().FullName,
+                        MethodName=iteration.Method.Name
+                    });
                 }
-                Logger.EmptyLine();
             }
             Logger.Log("migration finished with id: " + currentMigrationId);
-            return currentMigrationId;
+            result.EndId=currentMigrationId;
+            stopwatch.Stop();
+            result.Duration = stopwatch.Elapsed;
+            return result;
         }
-        public string Migrate(IEnumerable<IMigrationFile> migrationFiles)
+        public MigrationResult Migrate(IEnumerable<IMigrationFile> migrationFiles)
         {
             Logger.Log("starting migration from single file", "migrate");
 
@@ -92,7 +115,7 @@ namespace DatabaseAutoMigrator
                                ).SelectMany(i => i).ToList();
             return migrateMethods(allMigrations);
         }
-        public string Migrate(Assembly assembly, string nameSpace)
+        public MigrationResult Migrate(Assembly assembly, string nameSpace)
         {
             Type migrationFileType =typeof(IMigrationFile);
             var types = (from t in assembly.GetTypes()
@@ -104,24 +127,35 @@ namespace DatabaseAutoMigrator
 
         public ExecuteIterationResult ExecuteMigrateIteration(MigrateIteration iteration, string currentId)
         {
-            if (iteration != null)
+            Stopwatch watch = Stopwatch.StartNew();
+            ExecuteIterationResult result = new ExecuteIterationResult()
             {
-                try
-                {
-                    this.DatabaseProvider.StartTransaction("automigratetransaction");
-                    string description=(string)iteration.Method.Invoke(iteration.File,new object[]{this.DatabaseContext});
-                    this.InsertMigrationFingerPrint(iteration.Id, description);
-                    this.DatabaseProvider.CommitTransaction();
-                    return new ExecuteIterationResult();
-                }
-                catch (Exception ex)
-                {
-                    if (ex.InnerException != null)
-                        return new ExecuteIterationResult(ex.InnerException);
-                    return new ExecuteIterationResult(ex);
-                }
+                File=iteration.File.GetType().FullName,
+                MethodName=iteration.Method.Name
+            };
+            try
+            {
+                this.DatabaseProvider.StartTransaction("automigratetransaction");
+                string description = (string)iteration.Method.Invoke(iteration.File, new object[] { this.DatabaseContext });
+                this.InsertMigrationFingerPrint(iteration.Id, description);
+                this.DatabaseProvider.CommitTransaction();
+                result.Success = true;
             }
-            return new ExecuteIterationResult();
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    result.Error = ex.InnerException;
+                }
+                else
+                {
+                    result.Error = ex;
+                }
+                result.Success = false;
+            }
+            watch.Stop();
+            result.Duration = watch.Elapsed;
+            return result;
         }
 
         #region Migration Table
