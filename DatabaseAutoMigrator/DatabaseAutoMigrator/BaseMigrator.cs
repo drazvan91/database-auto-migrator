@@ -183,6 +183,11 @@ namespace DatabaseAutoMigrator
                     .Column("Description", DbType.String, 500)
                     .Timestamp();
                 this.DatabaseContext.CreateTable(table);
+                this.DatabaseContext.CreatePrimaryKey(
+                    new ConstraintDefinition(this.MigrationTableName, "PK_" + this.MigrationTableName)
+                        .AddColumn("Id")
+                        .Clustered(true)
+                    );
             }
         }
 

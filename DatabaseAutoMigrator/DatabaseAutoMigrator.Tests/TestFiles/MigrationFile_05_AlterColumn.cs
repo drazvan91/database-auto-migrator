@@ -8,6 +8,7 @@ namespace DatabaseAutoMigrator.Tests.TestFiles
         {
             db.AlterColumn("Table1", "AddColumn1", DbType.Int32, true);
             db.AlterColumn("Table1", "AddColumn2", DbType.String, true);
+            db.DropDefaultConstraint("Table1", "AddColumn3");
             db.AlterColumn("Table1", "AddColumn3", DbType.String,30, true);
             return "501";
         }

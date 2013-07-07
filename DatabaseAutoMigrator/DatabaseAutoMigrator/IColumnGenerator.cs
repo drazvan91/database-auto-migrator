@@ -9,6 +9,8 @@ namespace DatabaseAutoMigrator
         string Generate(IEnumerable<ColumnDefinition> columns);
 
         string Generate(string columnName, DbType type, bool allowNull);
+        string Generate(string columnName, DbType type, object defaultValue, bool allowNull);
         string Generate(string columnName, DbType type, int length, bool allowNull);
+        string Generate(string columnName, DbType type, int length, object defaultValue, bool allowNull);
     }
 }

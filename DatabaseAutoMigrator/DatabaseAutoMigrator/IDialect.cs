@@ -11,6 +11,7 @@ namespace DatabaseAutoMigrator
         string QuoteColumnName(string name);
         string QuoteTableName(string name);
         string QuoteConstraintName(string name);
+        string QuoteValue(object value);
 
         string Null { get; }
         string NotNull { get; }

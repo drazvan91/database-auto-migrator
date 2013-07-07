@@ -81,10 +81,17 @@ namespace DatabaseAutoMigrator
         {
             exec(Factory.GenerateAddColumn(tableName, columnName, type, allowNull));
         }
-
+        public void AddColumn(string tableName, string columnName, Models.DbType type,object defaultValue, bool allowNull = true)
+        {
+            exec(Factory.GenerateAddColumn(tableName, columnName, type,defaultValue, allowNull));
+        }
         public void AddColumn(string tableName, string columnName, Models.DbType type, int length, bool allowNull = true)
         {
             exec(Factory.GenerateAddColumn(tableName, columnName, type, length, allowNull));
+        }
+        public void AddColumn(string tableName, string columnName, Models.DbType type, int length,object defaultValue, bool allowNull = true)
+        {
+            exec(Factory.GenerateAddColumn(tableName, columnName, type, length,defaultValue, allowNull));
         }
 
         public void DropColumn(string tableName, string columnName)
@@ -96,10 +103,17 @@ namespace DatabaseAutoMigrator
         {
             exec(Factory.GenerateAlterColumn(tableName, columnName, type, allowNull));
         }
-
+        public void AlterColumn(string tableName, string columnName, Models.DbType type, object defaultValue, bool allowNull = true)
+        {
+            exec(Factory.GenerateAlterColumn(tableName, columnName, type, defaultValue, allowNull));
+        }
         public void AlterColumn(string tableName, string columnName, Models.DbType type, int length, bool allowNull = true)
         {
             exec(Factory.GenerateAlterColumn(tableName, columnName, type, length, allowNull));
+        }
+        public void AlterColumn(string tableName, string columnName, Models.DbType type, int length, object defaultValue, bool allowNull = true)
+        {
+            exec(Factory.GenerateAlterColumn(tableName, columnName, type, length, defaultValue, allowNull));
         }
 
         public void RenameColumn(string tableName, string oldName, string newName)
@@ -127,6 +141,12 @@ namespace DatabaseAutoMigrator
         public void DropConstraint(string table, string constraintName)
         {
             exec(Factory.GenerateDropConstraint(table, constraintName));
+        }
+
+
+        public void DropDefaultConstraint(string table, string columnName)
+        {
+            exec(Factory.GenerateDropDefaultValue(table, columnName));
         }
     }
 }

@@ -1,9 +1,6 @@
 ﻿using DatabaseAutoMigrator.DatabaseAccess;
-using DatabaseAutoMigrator.Models;
-using DatabaseAutoMigrator.Providers.Sql.DataAccess;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using DatabaseAutoMigrator.Providers.Generic;
+using System;
 
 namespace DatabaseAutoMigrator.Providers.Sql.Sql2000
 {
@@ -62,6 +59,28 @@ namespace DatabaseAutoMigrator.Providers.Sql.Sql2000
                 clustered,
                 columns);
             return new DatabaseCommand(cmd);
+        }
+
+        public override DatabaseCommand GenerateDropDefaultValue(string tableName, string columnName)
+        {
+            string sql =
+                "DECLARE @default sysname, @sql nvarchar(4000);" + Environment.NewLine + Environment.NewLine +
+                "-- get name of default constraint" + Environment.NewLine +
+                "SELECT @default = name" + Environment.NewLine +
+                "FROM sys.default_constraints" + Environment.NewLine +
+                "WHERE parent_object_id = object_id('{0}')" + Environment.NewLine +
+                "AND type = 'D'" + Environment.NewLine +
+                "AND parent_column_id = (" + Environment.NewLine +
+                "SELECT column_id" + Environment.NewLine +
+                "FROM sys.columns" + Environment.NewLine +
+                "WHERE object_id = object_id('{0}')" + Environment.NewLine +
+                "AND name = '{1}'" + Environment.NewLine +
+                ");" + Environment.NewLine + Environment.NewLine +
+                "-- create alter table command to drop constraint as string and run it" + Environment.NewLine +
+                "SET @sql = N'ALTER TABLE {0} DROP CONSTRAINT ' + @default;" + Environment.NewLine +
+                "EXEC sp_executesql @sql;";
+
+            return new DatabaseCommand(String.Format(sql, Dialect.QuoteTableName(tableName), columnName));
         }
     }
 }

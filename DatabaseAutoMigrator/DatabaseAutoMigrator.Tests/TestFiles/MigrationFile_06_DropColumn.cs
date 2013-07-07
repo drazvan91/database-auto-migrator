@@ -13,6 +13,7 @@ namespace DatabaseAutoMigrator.Tests.TestFiles
         public string Migrate_06_02_DropColumn2(IDatabaseContext db)
         {
             db.DropColumn("Table2", "AddColumn2");
+            db.DropDefaultConstraint("Table2", "AddColumn3");
             db.DropColumn("Table2", "AddColumn3");
             return "602";
         }

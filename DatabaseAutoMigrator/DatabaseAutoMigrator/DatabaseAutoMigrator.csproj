@@ -46,8 +46,8 @@
     <Compile Include="BaseTypeMapper.cs" />
     <Compile Include="CommandHelper.cs" />
     <Compile Include="DatabaseAccess\DatabaseCommand.cs" />
-    <Compile Include="GenericColumnGenerator.cs" />
-    <Compile Include="GenericCommandGenerator.cs" />
+    <Compile Include="Providers\Generic\GenericColumnGenerator.cs" />
+    <Compile Include="Providers\Generic\GenericCommandGenerator.cs" />
     <Compile Include="IColumnGenerator.cs" />
     <Compile Include="ICommandGenerator.cs" />
     <Compile Include="ITypeMapper.cs" />
@@ -78,6 +78,7 @@
     <Compile Include="Models\DbType.cs" />
     <Compile Include="Models\ColumnParameter.cs" />
     <Compile Include="Models\ConstraintDefinition.cs" />
+    <Compile Include="Providers\Generic\GenericDialect.cs" />
     <Compile Include="Providers\Sql\BaseSqlMigrator.cs" />
     <Compile Include="Providers\Sql\Sql2005\Sql2005CommandGenerator.cs" />
     <Compile Include="Providers\Sql\Sql2005\Sql2005DatabaseContext.cs" />

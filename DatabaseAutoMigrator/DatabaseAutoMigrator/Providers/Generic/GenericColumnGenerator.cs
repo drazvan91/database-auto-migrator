@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DatabaseAutoMigrator
+namespace DatabaseAutoMigrator.Providers.Generic
 {
     public class GenericColumnGenerator:IColumnGenerator
     {
@@ -29,13 +29,13 @@ namespace DatabaseAutoMigrator
             {
                 type = TypeMapper.MapDataType(column.Type);
             }
-            string ret = string.Format("{0} {1} {2} {3}",
+            return combine(
                 Dialect.QuoteColumnName(column.Name),
                 type,
                 column.AllowNull ? Dialect.Null : Dialect.NotNull,
-                column.AutoIncrement ? Dialect.Identity : string.Empty
+                column.AutoIncrement ? Dialect.Identity : string.Empty,
+                column.DefaultValue!=null?Dialect.Default(column.DefaultValue):null
                 );
-            return ret;
         }
 
         public virtual string Generate(IEnumerable<ColumnDefinition> columns)
@@ -43,27 +43,46 @@ namespace DatabaseAutoMigrator
             return string.Join(",", columns.Select(c => Generate(c)));
         }
 
-
         public string Generate(string columnName, DbType type, bool allowNull)
         {
-            string t = TypeMapper.MapDataType(type);
-            string ret = string.Format("{0} {1} {2}",
+            return combine(
                 Dialect.QuoteColumnName(columnName),
-                t,
+                TypeMapper.MapDataType(type),
                 allowNull ? Dialect.Null : Dialect.NotNull
                 );
-            return ret;
+        }
+        public string Generate(string columnName, DbType type, object defaultValue, bool allowNull)
+        {
+            return combine(
+                Dialect.QuoteColumnName(columnName),
+                TypeMapper.MapDataType(type),
+                allowNull ? Dialect.Null : Dialect.NotNull,
+                Dialect.Default(defaultValue)
+                );
         }
 
         public string Generate(string columnName, DbType type, int length, bool allowNull)
         {
-            string t = TypeMapper.MapDataType(type, length);
-            string ret = string.Format("{0} {1} {2}",
+            return combine(
                 Dialect.QuoteColumnName(columnName),
-                t,
+                TypeMapper.MapDataType(type, length),
                 allowNull ? Dialect.Null : Dialect.NotNull
                 );
-            return ret;
+        }
+
+        public string Generate(string columnName, DbType type, int length, object defaultValue, bool allowNull)
+        {
+            return combine(
+                Dialect.QuoteColumnName(columnName),
+                TypeMapper.MapDataType(type,length),
+                allowNull ? Dialect.Null : Dialect.NotNull,
+                Dialect.Default(defaultValue)
+                );
+        }
+
+        private string combine(params string[] elements)
+        {
+            return string.Join(" ", elements.Where(e => !string.IsNullOrWhiteSpace(e)));
         }
     }
 }

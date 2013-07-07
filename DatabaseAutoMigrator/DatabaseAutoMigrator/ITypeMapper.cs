@@ -1,7 +1,4 @@
 ﻿using DatabaseAutoMigrator.Models;
-using System;
-using System.Linq;
-using System.Text;
 namespace DatabaseAutoMigrator
 {
     public interface ITypeMapper

@@ -1,10 +1,9 @@
 ﻿using DatabaseAutoMigrator.DatabaseAccess;
 using DatabaseAutoMigrator.Models.Expressions;
-using System;
 using System.Linq;
 using System.Text;
 
-namespace DatabaseAutoMigrator
+namespace DatabaseAutoMigrator.Providers.Generic
 {
     public abstract class GenericCommandGenerator :ICommandGenerator
     {
@@ -128,7 +127,17 @@ namespace DatabaseAutoMigrator
             string columnDefinition = ColumnGenerator.Generate(columnName, type, allowNull);
             return new DatabaseCommand(string.Format(AddColumnFormat, tableName, columnDefinition));
         }
+        public virtual DatabaseCommand GenerateAddColumn(string tableName, string columnName, Models.DbType type,object defaultValue, bool allowNull)
+        {
+            string columnDefinition = ColumnGenerator.Generate(columnName, type,defaultValue, allowNull);
+            return new DatabaseCommand(string.Format(AddColumnFormat, tableName, columnDefinition));
+        }
 
+        public virtual DatabaseCommand GenerateAddColumn(string tableName, string columnName, Models.DbType type, int length, object defaultValue, bool allowNull)
+        {
+            string columnDefinition = ColumnGenerator.Generate(columnName, type, length, defaultValue, allowNull);
+            return new DatabaseCommand(string.Format(AddColumnFormat, tableName, columnDefinition));
+        }
         public virtual DatabaseCommand GenerateAddColumn(string tableName, string columnName, Models.DbType type, int length, bool allowNull)
         {
             string columnDefinition = ColumnGenerator.Generate(columnName, type, length, allowNull);
@@ -145,13 +154,21 @@ namespace DatabaseAutoMigrator
             string columnDefinition = ColumnGenerator.Generate(columnName, type, allowNull);
             return new DatabaseCommand(string.Format(AlterColumnFormat, tableName, columnDefinition));
         }
-
+        public virtual DatabaseCommand GenerateAlterColumn(string tableName, string columnName, Models.DbType type, object defaultValue, bool allowNull)
+        {
+            string columnDefinition = ColumnGenerator.Generate(columnName, type, defaultValue, allowNull);
+            return new DatabaseCommand(string.Format(AlterColumnFormat, tableName, columnDefinition));
+        }
         public virtual DatabaseCommand GenerateAlterColumn(string tableName, string columnName, Models.DbType type, int length, bool allowNull)
         {
             string columnDefinition = ColumnGenerator.Generate(columnName, type, length, allowNull);
             return new DatabaseCommand(string.Format(AlterColumnFormat, tableName, columnDefinition));
         }
-
+        public virtual DatabaseCommand GenerateAlterColumn(string tableName, string columnName, Models.DbType type, int length, object defaultValue, bool allowNull)
+        {
+            string columnDefinition = ColumnGenerator.Generate(columnName, type, length,defaultValue, allowNull);
+            return new DatabaseCommand(string.Format(AlterColumnFormat, tableName, columnDefinition));
+        }
         public virtual DatabaseCommand GenerateRenameColumn(string tableName, string oldName, string newName)
         {
             return new DatabaseCommand(string.Format(RenameColumnFormat, tableName, oldName, newName));
@@ -216,5 +233,12 @@ namespace DatabaseAutoMigrator
                 Dialect.QuoteTableName(table), Dialect.QuoteConstraintName(constraintName));
             return new DatabaseCommand(cmd);
         }
+
+
+        public abstract DatabaseCommand GenerateDropDefaultValue(string table, string columnName);
+
+
+
+        
     }
 }

@@ -8,14 +8,14 @@ namespace DatabaseAutoMigrator.Tests.TestFiles
         {
             db.AddColumn("Table1", "AddColumn1", DbType.Int32, false);
             db.AddColumn("Table1", "AddColumn2", DbType.DateTime, false);
-            db.AddColumn("Table1", "AddColumn3", DbType.Currency, true);
+            db.AddColumn("Table1", "AddColumn3", DbType.Currency, (object)3,true);
             return "401";
         }
         public string Migrate_04_02_AddColumn2(IDatabaseContext db)
         {
             db.AddColumn("Table2", "AddColumn1", DbType.String, 30,false);
             db.AddColumn("Table2", "AddColumn2", DbType.Time, false);
-            db.AddColumn("Table2", "AddColumn3", DbType.AnsiStringFixedLength,20, true);
+            db.AddColumn("Table2", "AddColumn3", DbType.AnsiStringFixedLength,20, "default value", true);
             return "402";
         }
     }

@@ -11,5 +11,6 @@ namespace DatabaseAutoMigrator.Models
         public int? Precision { get; set; }
         public int? Scale { get; set; }
 
+        public virtual object DefaultValue { get; set; }
     }
 }
